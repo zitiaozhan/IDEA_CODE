@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>智能手机产品信息管理系统</title>
+    <link type="text/css" href="/style/home.css" rel="stylesheet">
+    <script type="text/javascript" src="/script/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/script/home.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header">
+            <div class="header_title">
+                <a class="title_url" href="/index">智能手机产品信息管理系统</a>
+            </div>
+
+            <div class="header_right">
+                <a class="right_function" href="#">添加</a>
+            </div>
+        </div>
+    </header>
+    <div class="header_room"></div>
+    <div  align="center">
+    <div class="add_summary">
+        <h2 class="form_title">基本信息</h2>
+        <form class="add_form" action="/summary/add" method="post" enctype="multipart/form-data">
+            手机图片:
+            <input type="file" name="file" class="summary_file"><br>
+            名称:
+            <input type="text" name="name" required="required" placeholder="名称" maxlength="15"><br>
+            售价:
+            <input type="number" name="price" required="required" placeholder="售价" min="300" max="53000"><br>
+            CPU:
+            <input type="text" name="cpuType" required="required" placeholder="CPU" maxlength="15"><br>
+            内存:
+            <input type="text" name="memory" required="required" placeholder="内存" maxlength="15"><br>
+            品牌:
+            <input type="text" name="brand" required="required" placeholder="品牌" maxlength="10"/><br>
+            安兔兔跑分:
+            <input type="number" name="score" required="required" placeholder="安兔兔跑分" min="3000" max="6666666"><br>
+            <input type="submit" class="summary_submit" value="保存">
+        </form>
+    </div>
+    </div>

@@ -1,0 +1,10 @@
+<html>
+<body>
+    <pre>
+        Hello VM.
+
+        $!{value1}
+    </pre>
+</body>
+</html>
+

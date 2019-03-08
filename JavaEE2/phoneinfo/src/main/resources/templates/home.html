@@ -1,0 +1,95 @@
+#parse("home_header.html")
+
+    <div class="main">
+        <div class="main_search" align="center">
+            <form class="search_form" action="/search/1" method="post">
+                #set($key="search_key")
+                #set($nowPage="nowPage")
+                #set($mode="mode")
+                #if($hostHolder.getSpaceValue("mode")=="search")
+                <input class="form_input" value="$!{hostHolder.getSpaceValue($key)}" name="keyword" type="text"/>
+                #else
+                <input class="form_input" name="keyword" type="text" placeholder="名称、品牌搜索"/>
+                #end
+                <input class="form_submit" type="submit" value="搜索">
+            </form>
+        </div>
+        <div align="center">
+            <div class="main_list">
+                <ul class="list_list">
+                #if($pageBean.getPageData().size()==0)
+                    <p class="list_msg">空空如也</p>
+                #else
+                    #foreach($summary in $pageBean.getPageData())
+                    <li class="list_item">
+                        <div class="item_delete">
+                            #set($page=$hostHolder.getSpaceValue($nowPage))
+                            #if($hostHolder.getSpaceValue("mode")=="search")
+                            #set($search_mode=("search@"+$hostHolder.getSpaceValue($key)))
+                            <a class="delete_a" href="#" onclick="list_delete('$!{summary.id}','$search_mode','$page')">删</a>
+                            #else
+                            #set($tmp="page")
+                            <a class="delete_a" href="#" onclick="list_delete('$!{summary.id}','$tmp','$page')">删</a>
+                            #end
+                        </div>
+                        <div class="list_content">
+                            <div class="content_img">
+                                <a href="/detail/$!{summary.id}/$!{summary.detailId}" target="_blank">
+                                    <div class="lazy-img">
+                                        <img alt="名称" src="$!{summary.headImg}">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="content_info">
+                                <a href="/detail/$!{summary.id}/$!{summary.detailId}" target="_blank" class="info_title">
+                                    $!{summary.name}
+                                </a>
+                                <div class="info_detail">
+                                    <span class="data-box">
+                                        $!{summary.brand}
+                                    </span>
+                                    <span class="data-box">
+                                        $!{summary.memory}
+                                    </span>
+                                    <span class="data-box">
+                                        $!{summary.price}
+                                    </span>
+                                    <span class="data-box">
+                                        $!{summary.cpuType}
+                                    </span>
+                                </div>
+                                <div class="info_pts">
+                                    <div>$!{summary.score}</div>
+                                    安兔兔跑分
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    #end
+                #end
+                </ul>
+            </div>
+        </div>
+        <div class="main_page" align="center">
+            #if($pageBean.nowPage<=1)
+            <button class="page_display_no">上一页</button>
+            #else
+                #if($hostHolder.getSpaceValue($mode)=="search")
+                <button class="page_display" onclick="last_page_search('$!{pageBean.lastPage}','$!{hostHolder.getSpaceValue($key)}')">上一页</button>
+                #else
+                <button class="page_display" onclick="last_page('$!{pageBean.lastPage}')">上一页</button>
+                #end
+            #end
+            #if($pageBean.nowPage>=$pageBean.pageNum)
+            <button class="page_display_no">下一页</button>
+            #else
+                #if($hostHolder.getSpaceValue($mode)=="search")
+                <button class="page_display" onclick="next_page_search('$!{pageBean.nextPage}','$!{hostHolder.getSpaceValue($key)}')">下一页</button>
+                #else
+                <button class="page_display" onclick="next_page('$!{pageBean.nextPage}')">下一页</button>
+                #end
+            #end
+        </div>
+    </div>
+
+#parse("footer.html")

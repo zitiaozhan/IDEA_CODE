@@ -1,0 +1,171 @@
+#parse("detail_header.html")
+
+    <div class="detail_main" align="center">
+        <div class="main_summary">
+            <fieldset>
+                <legend>基本信息</legend>
+                <img src="$!{summary.headImg}" alt="手机图片"><br>
+                <b>名称: </b> $!{summary.name}<br>
+                <b>售价: </b> $!{summary.price}<br>
+                <b>CPU: </b> $!{summary.cpuType}<br>
+                <b>内存: </b> $!{summary.memory}<br>
+                <b>品牌: </b> $!{summary.brand}<br>
+                <button class="summary_update_button">修改</button><br>
+            </fieldset>
+            <div class="update_summary">
+                <form action="/summary/update" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                        <label>手机图片:
+                            <img src="$!{summary.headImg}" alt="手机图片"><br>
+                            <input type="file" name="file" class="summary_file" value="$!{summary.headImg}" placeholder="">
+                        </label>
+                        <input type="hidden" name="id" value="$!{summary.id}">
+                        <input type="hidden" name="detailId" value="$!{summary.detailId}">
+                        <label>名称:
+                            <input type="text" name="name" value="$!{summary.name}" required="required" placeholder="名称" maxlength="15">
+                        </label>
+                        <label>售价:
+                            <input type="number" name="price" value="$!{summary.price}" required="required" placeholder="售价" min="300" max="53000">
+                        </label>
+                        <label>CPU:
+                            <input type="text" name="cpuType" value="$!{summary.cpuType}" required="required" placeholder="CPU" maxlength="15">
+                        </label>
+                        <label>内存:
+                            <input type="text" name="memory" value="$!{summary.memory}" required="required" placeholder="内存" maxlength="15">
+                        </label>
+                        <label>品牌:
+                            <input type="text" name="brand" value="$!{summary.brand}" required="required" placeholder="品牌" maxlength="10">
+                        </label>
+                        <label>安兔兔跑分:
+                            <input type="number" name="score" value="$!{summary.score}" required="required" placeholder="安兔兔跑分" min="3000">
+                        </label>
+                        <input type="submit" class="summary_submit" value="保存">
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="main_detail">
+            #if($!{summary.detailId}==0)
+            <h2>完善更多信息</h2>
+            <form action="/detail/add" method="post" enctype="multipart/form-data">
+                <fieldset>
+                    <legend>详细信息</legend>
+                    <input type="hidden" name="summaryId" value="$!{summary.id}">
+                    <label>上市时间:
+                        <input type="date" placeholder="上市时间" name="buyDate">
+                    </label>
+                    <label>网络类型:
+                        <input type="text" placeholder="网络类型" name="networkType" maxlength="15">
+                    </label>
+                    <label>操作系统:
+                        <input type="text" placeholder="操作系统" name="osType" maxlength="15">
+                    </label>
+                    <label>机身厚度:
+                        <input type="number" placeholder="机身厚度" name="land" maxlength="15">
+                    </label>
+                    <label>核心数:
+                        <input type="text" placeholder="核心数" name="coreNum" maxlength="15">
+                    </label>
+                    <label>电池类型:
+                        <select name="powerType">
+                            <option selected="selected">不可拆卸</option>
+                            <option>可拆卸</option>
+                        </select>
+                    </label>
+                    <label>分辨率:
+                        <input type="text" placeholder="分辨率" name="ratio" maxlength="15">英寸
+                    </label>
+                    <label>屏幕尺寸:
+                        <input type="text" placeholder="屏幕尺寸" name="screenSize" maxlength="15">英寸
+                    </label>
+                    <label>前置摄像头:
+                        <input type="text" placeholder="前置摄像头" name="fcType" maxlength="15">
+                    </label>
+                    <label>后置摄像头:
+                        <input type="text" placeholder="后置摄像头" name="bcType" maxlength="15">
+                    </label>
+                    <label>其他配置信息:
+                        <textarea rows="4" placeholder="More" name="otherFunction" maxlength="150"></textarea>
+                    </label>
+                    <label>更多图片:
+                        <input type="file" name="file" class="detail_file">
+                    </label>
+                    <input type="submit" class="detail_submit" value="保存">
+                </fieldset>
+            </form>
+            #else
+            <fieldset>
+                <legend>详细信息</legend>
+                <b>上市时间: </b>
+                #if($detail.buyDate)
+                $date.format("yyyy-MM-dd",$detail.buyDate)
+                #end
+                <br>
+                <b>网络类型: </b> $!{detail.networkType}<br>
+                <b>操作系统: </b> $!{detail.osType}<br>
+                <b>机身厚度: </b> $!{detail.land}<br>
+                <b>核心数: </b> $!{detail.coreNum}<br>
+                <b>电池类型: </b> $!{detail.powerType}<br>
+                <b>分辨率: </b> $!{detail.ratio}<br>
+                <b>屏幕尺寸: </b> $!{detail.screenSize}<br>
+                <b>前置摄像头: </b> $!{detail.fcType}<br>
+                <b>后置摄像头: </b> $!{detail.bcType}<br>
+                <b>其他配置信息: </b> $!{detail.otherFunction}<br>
+                <img src="$!{detail.detailImg}" alt="更多图片"><br>
+                <button class="detail_update_button">修改</button><br>
+            </fieldset>
+            <div class="update_detail">
+                <form action="/detail/update" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>详细信息</legend>
+                        <input type="hidden" name="id" value="$!{detail.id}">
+                        <input type="hidden" name="summaryId" value="$!{summary.id}">
+                        <label>上市时间:
+                            <input type="date" placeholder="上市时间" name="buyDate" value="$date.format('yyyy-MM-dd',$detail.buyDate)">
+                        </label>
+                        <label>网络类型:
+                            <input type="text" placeholder="网络类型" name="networkType" value="$!{detail.networkType}" maxlength="15">
+                        </label>
+                        <label>操作系统:
+                            <input type="text" placeholder="操作系统" name="osType" value="$!{detail.osType}" maxlength="15">
+                        </label>
+                        <label>机身厚度:
+                            <input type="text" placeholder="机身厚度" name="land" value="$!{detail.land}" maxlength="15">
+                        </label>
+                        <label>核心数:
+                            <input type="text" placeholder="核心数" name="coreNum" value="$!{detail.coreNum}" maxlength="15">
+                        </label>
+                        <label>电池类型:
+                            <select  name="powerType">
+                                <option selected="selected">不可拆卸</option>
+                                <option>可拆卸</option>
+                            </select>
+                        </label>
+                        <label>分辨率:
+                            <input type="text" placeholder="分辨率" name="ratio" value="$!{detail.ratio}" maxlength="15">英寸
+                        </label>
+                        <label>屏幕尺寸:
+                            <input type="text" placeholder="屏幕尺寸" name="screenSize" value="$!{detail.screenSize}" maxlength="15">英寸
+                        </label>
+                        <label>前置摄像头:
+                            <input type="text" placeholder="前置摄像头" name="fcType" value="$!{detail.fcType}" maxlength="15">
+                        </label>
+                        <label>后置摄像头:
+                            <input type="text" placeholder="后置摄像头" name="bcType" value="$!{detail.bcType}" maxlength="15">
+                        </label>
+                        <label>其他配置信息:
+                            <textarea rows="4" placeholder="More" name="otherFunction" maxlength="150"></textarea>
+                        </label>
+                        <label>更多图片:
+                            <input type="file" name="file" class="detail_file">
+                        </label>
+                        <input type="submit" class="detail_submit" value="保存">
+                    </fieldset>
+                </form>
+            </div>
+            #end
+        </div>
+    </div>
+
+#parse("footer.html")

@@ -1,0 +1,52 @@
+<html>
+<head>
+    <title>
+        测试Velocity引擎模版
+    </title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>数字</th>
+        <th>平方</th>
+    </tr>
+    #foreach($res in $nums)
+        <tr>
+            <td>$!{foreach.index}</td>
+            <td>$!{res}</td>
+        </tr>
+    #end
+</table>
+<hr>
+<table>
+    <tr>
+        <th>水果</th>
+        <th>颜色</th>
+    </tr>
+    #foreach($key in $fruitMap.keySet())
+        <tr>
+            <td>$!{key}</td>
+            <td>$!{fruitMap.get($key)}</td>
+        </tr>
+    #end
+</table>
+<hr>
+    ##定义宏函数
+    #macro(initData $key,$value)
+    <tr>
+        <td>$key</td>
+        <td>$value</td>
+    </tr>
+    #end
+<table>
+    <tr>
+        <th>水果</th>
+        <th>颜色</th>
+    </tr>
+    #foreach($entry in $fruitMap.entrySet())
+        #initData($entry.getKey(),$entry.getValue())
+    #end
+</table>
+<hr>
+</body>
+</html>

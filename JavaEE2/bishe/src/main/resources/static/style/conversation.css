@@ -1,0 +1,188 @@
+
+p::selection,strong::selection,a::selection,textarea::selection,div::selection {
+    background:#f08a24;
+    color:#333333;
+}
+div {
+    display: block;
+}
+
+.conversationDetail{
+    width: 700px;
+    height: auto;
+    margin: 5px 1px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
+    border-radius: 2px;
+}
+
+/*顶部*/
+.chatTop{
+    width: 100%;
+    height:39px;
+    background-color: white;
+    border-bottom: 1px solid #D9D9D9;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.back{
+    position: absolute;
+    left: 13px;
+    line-height: 38px;
+}
+.back_a{
+    text-decoration: none;
+    color: #333333;
+    font-size: 15px;
+}
+.chatTitle{
+    line-height: 38px;
+    text-align: center;
+    color: #333333;
+    font-size: 15px;
+}
+
+/*信息*/
+.chatDetail{
+    width: 100%;
+    height:450px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #F2F2F5;
+}
+.clearfix{
+    display: inline-block;
+}
+.msg_bubble_list{
+    padding: 20px 10px 0;
+
+    position: relative;
+    max-width: 378px;
+    margin-top: 3px;
+    border-radius: 5px;
+}
+.bubble_mod{
+    width: 568px;
+    height: 74px;
+}
+.bubble_user{
+    width: 40px;
+    height: 50px;
+    display: inline-block;
+}
+.bubble_box{
+    max-width: 413px;
+    display: inline-block;
+}
+.bubble_cont{
+    position: relative;
+    max-width: 370px;
+    padding: 1px 1px 1px 10px;
+    border-radius: 5px;
+    box-shadow: 0 3px 3px rgba(0,0,0,.05);
+    background: #fff;
+    border: 1px #ccc solid;
+}
+.bubble_l{
+    float: left;
+}
+.bubble_r{
+    float: right;
+}
+.bubble_arrow_left{
+    left: -11px;
+    position: absolute;
+    top: 5px;
+}
+.bubble_arrow_right{
+    right: -14px;
+    position: absolute;
+    top: 5px;
+}
+.W_arrow_bor_l{
+    margin: 1px 0 0 -3px;
+    color: #fff;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+
+    display: inline-block;
+    border-width: 8px;
+    border-style: solid;
+    font-size: 0;
+    line-height: 0;
+    vertical-align: top;
+}
+.W_arrow_bor_r{
+    margin: 1px 0 0 -3px;
+    color: #fff;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+
+    display: inline-block;
+    border-width: 8px;
+    border-style: solid;
+    font-size: 0;
+    line-height: 0;
+    vertical-align: top;
+}
+.cont{
+    float: left;
+    max-width: 350px;
+    margin-right: 22px;
+    padding: 6px 6px;
+}
+.main_bottom{
+    font-size: 10px;
+}
+.page{
+    line-height: 20px;
+    color: #333;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+/*底部*/
+.chatBottom{
+    width: 100%;
+    height:90px;
+    background-color: white;
+    border-bottom: 1px solid #D9D9D9;
+}
+.chatBottom_form_div{
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+.chatBottom_col-sm-11{
+    width: 100%;
+    height: 50px;
+}
+.chatBottom_form-textarea{
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    resize: none;
+    border: 1px solid #F2F2F5;
+}
+.chatBottom_form-textarea:hover{
+    border: 1px solid #F2F2F5;
+}
+.chatBottom_content-form-submit{
+    width: 100%;
+    height: 42px;
+    margin-bottom: 15px;
+    background-color: white;
+}
+.chatBottom_content-submit{
+    width: 100%;
+    height: 30px;
+    margin-top: 5px;
+    font-size: 20px;
+    outline: none;
+    box-shadow: 0 1px 0px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
+    color: #333333 !important;
+    border: none !important;
+    background-color: #F2F2F5 !important;
+}

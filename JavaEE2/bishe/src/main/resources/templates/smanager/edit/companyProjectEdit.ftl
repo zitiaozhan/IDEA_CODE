@@ -1,4 +1,5 @@
 <#include "../header.ftl" parse=true>
+<#setting number_format="#">
 <div class="view-body">
 <#--个人菜单-->
 <#if localRole??>
@@ -18,7 +19,8 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">横向项目管理
+                    <h6 class="layout padding-left manage-head-con" onclick="modify_site('/companyProject')">
+                        横向项目管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/companyProject/edit" method="post">
                             <#if companyProject??>
                                 <input type="hidden" name="id" value="${companyProject.id}"/>
+                                <input type="hidden" name="status" value="${companyProject.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">项目名称</label>
@@ -50,16 +53,28 @@
                                 <label class="">负责人员</label>
                                 <div class="col-sm-3">
                                     <#if companyProject??>
-                                        <input type="hidden" name="chargePerson" value="${localUser.id}"/>
-                                        <input type="text" class="form-control redisabled"
-                                               placeholder="负责人员"
-                                               required="required" value="${chargePersonName}"
-                                               disabled="disabled">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="负责人员编号" name="chargePerson"
+                                                   required="required" value="${companyProject.chargePerson}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="chargePerson" value="${companyProject.chargePerson}"/>
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="负责人员"
+                                                   value="${chargePersonName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="chargePerson" value="${localUser.id}"/>
-                                        <input type="text" class="form-control"
-                                               disabled="disabled" placeholder="负责人员"
-                                               value="${localUser.id}">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="chargePerson" placeholder="负责人员编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="chargePerson" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="负责人员"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                             </div>
@@ -120,13 +135,15 @@
                                 <label class="">参加人员</label>
                                 <div class="col-sm-11">
                                     <#if companyProject??>
-                                        <textarea class="form-textarea" name="participant"
-                                                  cols="70" rows="7"
-                                                  disabled="disabled">${companyProject.participant}</textarea>
+                                        <textarea class="form-textarea more-author" name="participant"
+                                                  cols="70" rows="7" onmouseout="validateMoreAuthor('参加人员')"
+                                                  disabled="disabled" placeholder="参加人员">${companyProject.participant}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="participant"
-                                                  cols="70" rows="7">参加人员</textarea>
-                                    </#if>
+                                        <textarea class="form-textarea more-author" name="participant"
+                                                  onmouseout="validateMoreAuthor('参加人员')"
+                                                  cols="70" rows="7" placeholder="参加人员"></textarea>
+                                    </#if>（填入作者编号，使用英文逗号隔开）
+                                    <p class="warn_div" style="color: red;"></p>
                                 </div>
                             </div>
 
@@ -159,12 +176,12 @@
                                 <label class="">合同经费</label>
                                 <div class="col-sm-3">
                                     <#if companyProject??>
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control" min="5000"
                                                name="contractMoney" placeholder="合同经费"
                                                required="required" value="${companyProject.contractMoney}"
                                                disabled="disabled">
                                     <#else>
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control" min="5000"
                                                name="contractMoney" placeholder="合同经费"
                                                required="required">
                                     </#if>
@@ -172,16 +189,16 @@
                                 <label class="">到款经费</label>
                                 <div class="col-sm-3">
                                     <#if companyProject??>
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control" min="5000"
                                                name="arrivalMoney" placeholder="到款经费"
                                                value="${companyProject.arrivalMoney}"
                                                disabled="disabled">
                                     <#else>
-                                        <input type="text" class="form-control"
+                                        <input type="number" class="form-control" min="5000"
                                                name="arrivalMoney" placeholder="到款经费">
                                     </#if>
                                 </div>
-                                (万元)
+                                (元)
                             </div>
 
                             <div class="form-group">
@@ -238,7 +255,7 @@
 
                             <div class="content-form-submit" align="center">
                                 <#if companyProject??>
-                                    <#if localRole.detail!='teacher'>
+                                    <#if (companyProject.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                         <input class="content-submit" id="edit_btn" type="button"
                                                value="编辑">
                                     </#if>

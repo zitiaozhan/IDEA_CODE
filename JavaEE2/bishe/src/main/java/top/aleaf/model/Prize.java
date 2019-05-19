@@ -17,12 +17,13 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class Prize extends BaseEntity {
     private String name;
-    private Integer author;
+    private String author;
     private String guidanceTeacher;
     private String certificateId;
     private String prizeType;
@@ -45,11 +46,11 @@ public class Prize extends BaseEntity {
         return this;
     }
 
-    public Integer getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public Prize setAuthor(Integer author) {
+    public Prize setAuthor(String author) {
         this.author = author;
         return this;
     }

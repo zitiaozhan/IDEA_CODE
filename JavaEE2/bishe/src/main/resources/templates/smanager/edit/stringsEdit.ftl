@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">字符串管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/strings')">
+                        字符串管理
                     </h6>
                 </div>
             </div>
@@ -37,11 +39,11 @@
                                 <label class="">实体类型</label>
                                 <div class="col-sm-3">
                                     <select class="form-control" name="entityType">
-                                    <#list infoTypeList as item>
-                                        <#if strings?exists&&strings.entityType==item.id>
-                                            <option selected value="${item.id}">${item.entityName!"出错"}</option>
+                                    <#list entityTypeList as item>
+                                        <#if strings?exists&&strings.entityType==item.value>
+                                            <option selected value="${item.value}">${item.desc!"出错"}</option>
                                         <#else>
-                                            <option value="${item.id}">${item.entityName!"出错"}</option>
+                                            <option value="${item.value}">${item.desc!"出错"}</option>
                                         </#if>
                                     </#list>
                                     </select>

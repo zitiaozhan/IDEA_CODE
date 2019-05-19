@@ -35,6 +35,7 @@
             <#assign placeholder="请输入联系人姓名">
             <#assign value='${userName!""}'>
             <#assign isAdd=false>
+            <#assign isMessage=true>
             <#assign isProject=false>
 
             <#--列表头信息-->
@@ -89,7 +90,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

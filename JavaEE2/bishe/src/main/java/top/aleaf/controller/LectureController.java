@@ -1,9 +1,9 @@
 package top.aleaf.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,38 +11,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.aleaf.model.*;
-import top.aleaf.service.InfoTypeService;
+import top.aleaf.model.enumModel.EntityType;
+import top.aleaf.model.enumModel.UserRoleEnum;
 import top.aleaf.service.LectureService;
 import top.aleaf.service.UserService;
-import top.aleaf.sync.EventModel;
-import top.aleaf.sync.EventProducer;
 import top.aleaf.sync.EventType;
+import top.aleaf.utils.ConstantUtil;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/12 0012
  */
 @Controller
 public class LectureController {
     public static final Logger LOGGER = LoggerFactory.getLogger(LectureController.class);
-    @Autowired
+    @Resource
     private LectureService lectureService;
-    @Autowired
+    @Resource
     private UserService userService;
-    @Autowired
-    private InfoTypeService infoTypeService;
-    @Autowired
-    private EventProducer eventProducer;
-    @Autowired
+    @Resource
+    private BaseController baseController;
+    @Resource
     private HostHolder hostHolder;
 
     @RequestMapping(path = {"/lecture"})
     public String showAll(@RequestParam(value = "msg", required = false) String msg,
+                          @RequestParam(value = "part", required = false) boolean part,
+                          @RequestParam(value = "id", required = false, defaultValue = "0") int id,
                           Lecture lecture, Model model) {
         try {
             User localUser = hostHolder.getUser();
@@ -51,24 +52,27 @@ public class LectureController {
                 return "redirect:/index";
             }
 
-            List<Lecture> lectureList = new ArrayList<>();
-            if ("教师".equals(localRole.getName())) {
+            List<Lecture> lectureList;
+            if (!part && UserRoleEnum.TEACHER.getDesc().equals(localRole.getName())) {
                 lecture.setCreatedId(localUser.getId());
+            }
+            if (id > 0) {
+                lecture.setId(id);
             }
             lectureList = this.lectureService.getAll(lecture);
 
-            List<ViewObject> vos = new ArrayList<>();
+            List<ViewObject> vos = Lists.newArrayList();
             for (Lecture item : lectureList) {
                 ViewObject vo = new ViewObject();
                 vo.set("lecture", item);
-                vo.set("rapporteur", userService.getByPrimaryKey(item.getRapporteur()).getName());
+                vo.set("rapporteur", userService.getByNumber(item.getRapporteur()).getName());
                 vos.add(vo);
             }
             model.addAttribute("vos", vos);
             model.addAttribute("nowDate", new Date());
 
             //分页实现
-            model.addAttribute("pageInfo", new PageInfo<Lecture>(lectureList));
+            model.addAttribute("pageInfo", new PageInfo<>(lectureList));
             model.addAttribute("lecture", lecture);
 
             if (msg != null) {
@@ -83,7 +87,7 @@ public class LectureController {
 
     @RequestMapping(path = {"/lecture/edit"}, method = RequestMethod.POST)
     public String editLecture(Lecture lecture, Model model) {
-        String msg = null;
+        String msg;
         try {
             boolean isSave = lecture.getId() == null;
             User localUser = hostHolder.getUser();
@@ -91,17 +95,26 @@ public class LectureController {
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ((isSave && "manager".equals(localRole.getDetail())) || (!isSave && "teacher".equals(localRole.getDetail()))) {
+            boolean limitOperate = (isSave && UserRoleEnum.MANAGER.getValue().equals(localRole.getDetail()));
+            if (limitOperate) {
                 msg = "受限制的操作";
             } else {
                 if (isSave) {
                     lecture.setCreatedId(localUser.getId());
                     lecture.setCreatedDate(new Date());
                 }
-
-                msg = this.lectureService.save(lecture) ?
+                boolean result = this.lectureService.save(lecture);
+                msg = result ?
                         (isSave ? "添加成功!" : "更新成功!") :
                         (isSave ? "添加失败!" : "更新失败!");
+                //发送到消息队列
+                if (!isSave && result) {
+                    Lecture entity = this.lectureService.getByPrimaryKey(lecture.getId());
+                    int status = entity.getStatus();
+                    if (status == ConstantUtil.PROJECT_STATUS_SUCCESS || ConstantUtil.PROJECT_STATUS_REFUSE == status) {
+                        baseController.generalEventModelAndSend(lecture.getId(), EntityType.LECTURE, null, status, EventType.REEDIT);
+                    }
+                }
             }
         } catch (Exception e) {
             LOGGER.error("学术讲座编辑出错");
@@ -123,7 +136,7 @@ public class LectureController {
             if (lectureId != null) {
                 Lecture lecture = this.lectureService.getByPrimaryKey(lectureId);
                 model.addAttribute("lecture", lecture);
-                model.addAttribute("rapporteurName", this.userService.getByPrimaryKey(lecture.getRapporteur()).getName());
+                model.addAttribute("rapporteurName", this.userService.getByNumber(lecture.getRapporteur()).getName());
             }
         } catch (Exception e) {
             LOGGER.error("学术讲座数据准备出错");
@@ -134,17 +147,27 @@ public class LectureController {
 
     @RequestMapping(path = {"/lecture/delete/{lectureId}"})
     public String delete(@PathVariable("lectureId") int lectureId, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
             User localUser = hostHolder.getUser();
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ("manager".equals(localRole.getDetail()) || ("teacher".equals(localRole.getDetail()) && !localUser.getId().equals(this.lectureService.getByPrimaryKey(lectureId).getCreatedId()))) {
+            boolean limitOperate = UserRoleEnum.MANAGER.getValue().equals(localRole.getDetail()) || (UserRoleEnum.TEACHER.getValue().equals(localRole.getDetail()) && !localUser.getId().equals(this.lectureService.getByPrimaryKey(lectureId).getCreatedId()));
+            if (limitOperate) {
                 msg = "受限制的操作";
             } else {
-                msg = this.lectureService.delete(lectureId) ? "删除成功" : "删除失败";
+                Lecture entity = this.lectureService.getByPrimaryKey(lectureId);
+                boolean result = this.lectureService.delete(lectureId);
+                msg = result ? "删除成功" : "删除失败";
+                //发送到消息队列
+                if (result && null != entity) {
+                    int status = entity.getStatus();
+                    if (status == ConstantUtil.PROJECT_STATUS_SUCCESS || ConstantUtil.PROJECT_STATUS_REFUSE == status) {
+                        baseController.generalEventModelAndSend(lectureId, EntityType.LECTURE, null, status, EventType.DELETE);
+                    }
+                }
             }
         } catch (Exception e) {
             LOGGER.error("学术讲座删除出错");
@@ -157,34 +180,29 @@ public class LectureController {
 
     @RequestMapping(path = {"/lecture/approve/{lectureId}"})
     public String approve(@PathVariable("lectureId") int lectureId,
-                          @RequestParam("status") int status, Model model) {
-        String msg = null;
+                          @RequestParam("status") int status, Model model,
+                          @RequestParam(value = "option", required = false) String option) {
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            User localUser = hostHolder.getUser();
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ("teacher".equals(localRole.getDetail())) {
+            if (UserRoleEnum.TEACHER.getValue().equals(localRole.getDetail())) {
                 msg = "受限制的操作";
             } else {
                 boolean result = this.lectureService.setStatus(lectureId, status);
                 msg = result ? "审批成功" : "审批失败";
+                if (!result) {
+                    model.addAttribute("msg", msg);
+                    return "/lecture";
+                }
+                if (com.google.common.base.Strings.isNullOrEmpty(option)) {
+                    option = "审批通过";
+                }
 
-                int resultStatus = result ? 1 : 2;
-                Lecture lecture = this.lectureService.getByPrimaryKey(lectureId);
-                String projectName = lecture.getName();
-                String projectUrl = "/lecture?lectureId=" + lectureId;
-                EventModel eventModel = new EventModel();
-                eventModel.setActorId(localUser.getId());
-                eventModel.setEntityId(lectureId);
-                eventModel.setEntityType(this.infoTypeService.getByPrimaryKey(7));
-                eventModel.setEventOwnerId(lecture.getCreatedId());
-                eventModel.setEventType(EventType.APPROVE);
-                eventModel.addExt("resultStatus", resultStatus + "");
-                eventModel.addExt("projectName", projectName);
-                eventModel.addExt("projectUrl", projectUrl);
-                this.eventProducer.fireEvent(eventModel);
+                //发送到消息队列
+                baseController.generalEventModelAndSend(lectureId, EntityType.LECTURE, option, status, EventType.APPROVE);
             }
         } catch (Exception e) {
             LOGGER.error("学术讲座审批出错");

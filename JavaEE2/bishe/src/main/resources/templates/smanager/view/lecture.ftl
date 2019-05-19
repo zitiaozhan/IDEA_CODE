@@ -93,25 +93,25 @@
                         ${vo['lecture'].holdUnit?html}
                         </div>
                         <div class="td w15">
-                            <#if localRole.detail!='manager'&&lecture.status!=4>
+                            <#if lecture.status!=4&&((localRole.detail=='teacher'&&lecture.status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/lecture/delete/${vo['lecture'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
-                            <#if localRole.detail!='teacher'>
+                            <#if (lecture.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                 <a href="#" onclick="modify_site('/lecture/forEdit?lectureId=${vo['lecture'].id}')"
                                    class="button-word2 btn_ajax_confirm">编辑</a>
                             </#if>
 
                             <#if lecture.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/lecture/approve/${vo['lecture'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/lecture/approve/${vo['lecture'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/lecture/approve/${vo['lecture'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/lecture/approve/${vo['lecture'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if lecture.status==4>
-                                <a href="#" onclick="modify_site('/lecture/approve/${vo['lecture'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/lecture/approve/${vo['lecture'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -120,7 +120,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

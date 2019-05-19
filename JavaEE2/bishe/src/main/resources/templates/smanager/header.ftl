@@ -3,16 +3,15 @@
 <head>
     <meta charset="utf-8">
     <title>控制台</title>
+    <link href="../../style/login.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="../../style/identify.css" />
     <link rel="stylesheet" type="text/css" href="../../style/layout.css" />
-    <link href="../../style/login.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" type="text/css" href="../../style/account.css" />
     <link rel="stylesheet" type="text/css" href="../../style/style.css" />
     <link rel="stylesheet" type="text/css" href="../../style/control_index.css" />
     <link rel="stylesheet" type="text/css" href="../../style/other_style.css">
 
     <script type="text/javascript" src="../../script/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="../../script/layer/layer.js"></script>
+    <script type="text/javascript" src="../../script/echarts.js"></script>
     <script type="text/javascript" src="../../script/haidao.offcial.general.js"></script>
     <script type="text/javascript" src="../../script/select.js"></script>
     <script type="text/javascript" src="../../script/haidao.validate.js"></script>
@@ -42,6 +41,7 @@
                     <!--have表示有消息，没有消息去掉have-->
                 </a>
             </li>
+            <#--
             <li class="fl topbar-info-item strong">
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle topbar-btn">
@@ -65,7 +65,8 @@
                         <li><a href="#">某某数据字典</a></li>
                     </ul>
                 </div>
-            </li>
+            </li>-->
+
             <li class="fl topbar-info-item">
                 <div class="dropdown">
                     <a href="#" class="topbar-btn">

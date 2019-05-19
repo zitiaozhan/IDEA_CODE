@@ -92,8 +92,8 @@
                         <div class="td w15">
                         ${vo['governmentProject'].chargeGroup?html}
                         </div>
-                        <div class="td w5">
-                            <#if localRole.detail!='manager'&&vo['governmentProject'].status!=4>
+                        <div class="td w15">
+                            <#if vo['governmentProject'].status!=4&&((localRole.detail=='teacher'&&vo['governmentProject'].status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/governmentProject/delete/${vo['governmentProject'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
@@ -101,14 +101,14 @@
                                class="button-word2 btn_ajax_confirm">查看</a>
                             <#if vo['governmentProject'].status==0&&vo['governmentProject'].projectStatus=='已结题'>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/governmentProject/approve/${vo['governmentProject'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/governmentProject/approve/${vo['governmentProject'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/governmentProject/approve/${vo['governmentProject'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/governmentProject/approve/${vo['governmentProject'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if vo['governmentProject'].status==4>
-                                <a href="#" onclick="modify_site('/governmentProject/approve/${vo['governmentProject'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/governmentProject/approve/${vo['governmentProject'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -117,7 +117,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

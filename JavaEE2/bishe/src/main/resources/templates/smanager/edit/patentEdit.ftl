@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">专利管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/patent')">
+                        专利管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/patent/edit" method="post">
                             <#if patent??>
                                 <input type="hidden" name="id" value="${patent.id}"/>
+                                <input type="hidden" name="status" value="${patent.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">专利名称</label>
@@ -79,16 +82,28 @@
                                 <label class="">专利作者</label>
                                 <div class="col-sm-3">
                                     <#if patent??>
-                                        <input type="hidden" name="author" value="${patent.author}">
-                                        <input type="text" class="form-control redisabled"
-                                               placeholder="专利作者"
-                                               value="${authorName}" required="required"
-                                               disabled="disabled">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="专利作者编号" name="author"
+                                                   required="required" value="${patent.author}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${patent.author}">
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="专利作者"
+                                                   value="${authorName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="author" value="${localUser.id}">
-                                        <input type="text" class="form-control"
-                                               value="${localUser.name}" placeholder="专利作者"
-                                               required="required" disabled="disabled">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="author" placeholder="专利作者编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="专利作者"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                             </div>
@@ -121,13 +136,16 @@
                                 <label class="">更多人员</label>
                                 <div class="col-sm-11">
                                     <#if patent??>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7"
-                                                  disabled="disabled">${patent.applyDate}</textarea>
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  cols="70" rows="7" placeholder="更多人员"
+                                                  onmouseout="validateMoreAuthor('参加人员')"
+                                                  disabled="disabled">${patent.moreAuthor}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7">更多人员</textarea>
-                                    </#if>
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  onmouseout="validateMoreAuthor('参加人员')"
+                                                  cols="70" rows="7" placeholder="更多人员"></textarea>
+                                    </#if>（填入作者编号，使用英文逗号隔开）
+                                    <p class="warn_div" style="color: red;"></p>
                                 </div>
                             </div>
 
@@ -176,7 +194,7 @@
 
                             <div class="content-form-submit" align="center">
                                 <#if patent??>
-                                    <#if localRole.detail!='teacher'>
+                                    <#if (patent.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                         <input class="content-submit" id="edit_btn" type="button"
                                                value="编辑">
                                     </#if>

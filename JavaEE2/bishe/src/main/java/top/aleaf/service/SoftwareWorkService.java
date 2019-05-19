@@ -1,25 +1,26 @@
 package top.aleaf.service;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.aleaf.mapper.SoftwareWorkMapper;
 import top.aleaf.model.SoftwareWork;
 import top.aleaf.utils.ConstantUtil;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Service
 public class SoftwareWorkService {
-    @Autowired
+    @Resource
     private SoftwareWorkMapper softwareWorkMapper;
-    @Autowired
+    @Resource
     private SensitiveFilterService filterService;
 
     public boolean save(SoftwareWork softwareWork) {
@@ -49,10 +50,7 @@ public class SoftwareWorkService {
     }
 
     public boolean setStatus(SoftwareWork softwareWork) {
-        if (softwareWork != null && softwareWork.getId() != null) {
-            return this.softwareWorkMapper.updateByPrimaryKeySelective(softwareWork) > 0;
-        }
-        return false;
+        return softwareWork != null && softwareWork.getId() != null && this.softwareWorkMapper.updateByPrimaryKeySelective(softwareWork) > 0;
     }
 
     public boolean setStatus(int id, int status) {
@@ -72,6 +70,9 @@ public class SoftwareWorkService {
             PageHelper.startPage(softwareWork.getPage(), softwareWork.getRows());
         }
         StringBuilder builder = new StringBuilder("");
+        if (softwareWork.getScoreNotNull()) {
+            builder.append(" and result_score is not null");
+        }
         if (softwareWork.getName() != null) {
             builder.append(" and name like '%").append(softwareWork.getName()).append("%' ");
         }
@@ -81,11 +82,31 @@ public class SoftwareWorkService {
         if (softwareWork.getStatus() != null) {
             builder.append(" and status=").append(softwareWork.getStatus());
         }
+        if (softwareWork.getId() != null) {
+            builder.append(" and id=").append(softwareWork.getId());
+        }
         if (softwareWork.getCreatedId() != null) {
             builder.append(" and created_id=").append(softwareWork.getCreatedId());
         }
         return softwareWorkMapper.selectByExample(GeneralExample.getBaseAndConditionExample(
                 SoftwareWork.class, builder.toString(), false
         ));
+    }
+
+    public List<SoftwareWork> getByCreatedId(int userId) {
+        return this.softwareWorkMapper.selectByExample(
+                GeneralExample.getConditionAndGroupAndOrderExample(SoftwareWork.class,"created_date desc", "limit 10", "created_id=" + userId + " and status!=" + ConstantUtil.PROJECT_STATUS_DELETE));
+    }
+
+    /**
+     * 数量
+     * @param status
+     * @return
+     */
+    public int getAllCount(int status) {
+        if (-1 == status) {
+            return this.softwareWorkMapper.selectCount(new SoftwareWork().setStatus(null));
+        }
+        return this.softwareWorkMapper.selectCount(new SoftwareWork().setStatus(status));
     }
 }

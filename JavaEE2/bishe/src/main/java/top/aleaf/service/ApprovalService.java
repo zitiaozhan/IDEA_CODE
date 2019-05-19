@@ -1,23 +1,24 @@
 package top.aleaf.service;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.aleaf.mapper.ApprovalMapper;
 import top.aleaf.model.Approval;
 import top.aleaf.utils.ConstantUtil;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Service
 public class ApprovalService {
-    @Autowired
+    @Resource
     private ApprovalMapper approvalMapper;
 
     public boolean save(Approval approval) {
@@ -44,10 +45,7 @@ public class ApprovalService {
     }
 
     public boolean setStatus(Approval approval) {
-        if (approval != null && approval.getId() != null) {
-            return this.approvalMapper.updateByPrimaryKeySelective(approval) > 0;
-        }
-        return false;
+        return approval != null && approval.getId() != null && this.approvalMapper.updateByPrimaryKeySelective(approval) > 0;
     }
 
     public boolean setStatus(int id, int status) {
@@ -60,6 +58,11 @@ public class ApprovalService {
     public Approval getByPrimaryKey(int id) {
         return this.approvalMapper.selectOneByExample(
                 GeneralExample.getBaseAndConditionExample(Approval.class, " and id=" + id, true));
+    }
+
+    public List<Approval> getByUserId(int userId) {
+        return this.approvalMapper.selectByExample(
+                GeneralExample.getBaseAndConditionExample(Approval.class, " and user_id=" + userId, true));
     }
 
     public List<Approval> getAll(Approval approval) {
@@ -77,5 +80,25 @@ public class ApprovalService {
         return approvalMapper.selectByExample(GeneralExample.getBaseAndConditionExample(
                 Approval.class, builder.toString(), true
         ));
+    }
+
+    /**
+     * 统计审核数目前limit名的管理
+     *
+     * @param limit 限制条数
+     * @return 结果
+     */
+    public List<Approval> getUserByApprovalNum(int limit) {
+        limit = limit < 1 ? 10 : limit;
+        return this.approvalMapper.selectUserByApprovalNum(limit);
+    }
+
+    /**
+     * 审核项目数量
+     *
+     * @return 结果
+     */
+    public int getAllCount() {
+        return this.approvalMapper.selectCount(new Approval().setStatus(null));
     }
 }

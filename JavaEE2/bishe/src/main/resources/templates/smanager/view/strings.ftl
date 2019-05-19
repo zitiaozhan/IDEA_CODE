@@ -36,7 +36,7 @@
             <#assign isAdd=true>
             <#assign isProject=false>
             <#assign stringsType=true>
-            <#assign stringsTypeList=infoTypeList>
+            <#assign stringsTypeList=entityTypeList>
 
             <#--列表头信息-->
             <#include "../headerInfo.ftl" parse=true>
@@ -75,7 +75,7 @@
                             <#if localRole.detail=='smanager'>
                             <a href="#" onclick="del_site('/strings/delete/${vo['strings'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
-                            <a href="#" onclick="modify_site('/strings/forEdit?stringsId=${vo['strings'].id}')"
+                            <a href="#" onclick="confirm_redirect('编辑','/strings/forEdit?stringsId=${vo['strings'].id}')"
                                class="button-word2 btn_ajax_confirm">编辑</a>
                             </#if>
                         </div>
@@ -84,7 +84,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

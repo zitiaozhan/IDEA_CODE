@@ -16,13 +16,14 @@ import java.util.Date;
 
 /**
  * 〈〉
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class Patent extends BaseEntity{
     private String name;
     private String certificateId;
-    private Integer author;
+    private String author;
     private String moreAuthor;
     private String patentNumber;
     private String type;
@@ -54,11 +55,11 @@ public class Patent extends BaseEntity{
         return this;
     }
 
-    public Integer getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public Patent setAuthor(Integer author) {
+    public Patent setAuthor(String author) {
         this.author = author;
         return this;
     }

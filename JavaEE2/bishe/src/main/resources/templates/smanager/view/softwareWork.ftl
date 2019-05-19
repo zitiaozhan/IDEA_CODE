@@ -92,8 +92,8 @@
                         <div class="td w15">
                         ${vo['softwareWork'].rightRange?html}
                         </div>
-                        <div class="td w5">
-                            <#if localRole.detail!='manager'&&softwareWork.status!=4>
+                        <div class="td w15">
+                            <#if softwareWork.status!=4&&((localRole.detail=='teacher'&&softwareWork.status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/softwareWork/delete/${vo['softwareWork'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
@@ -101,14 +101,14 @@
                                class="button-word2 btn_ajax_confirm">查看</a>
                             <#if softwareWork.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/softwareWork/approve/${vo['softwareWork'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/softwareWork/approve/${vo['softwareWork'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/softwareWork/approve/${vo['softwareWork'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/softwareWork/approve/${vo['softwareWork'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if softwareWork.status==4>
-                                <a href="#" onclick="modify_site('/softwareWork/approve/${vo['softwareWork'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/softwareWork/approve/${vo['softwareWork'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -117,7 +117,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

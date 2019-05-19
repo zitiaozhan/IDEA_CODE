@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author 郭新晔
+ */
 @Aspect
 @Component
 public class LogAspect {

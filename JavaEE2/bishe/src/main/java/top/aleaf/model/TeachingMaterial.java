@@ -17,12 +17,13 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class TeachingMaterial extends BaseEntity {
     private String name;
-    private Integer author;
+    private String author;
     private String moreAuthor;
     private Integer wordNumber;
     private String area;
@@ -48,11 +49,11 @@ public class TeachingMaterial extends BaseEntity {
         return this;
     }
 
-    public Integer getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public TeachingMaterial setAuthor(Integer author) {
+    public TeachingMaterial setAuthor(String author) {
         this.author = author;
         return this;
     }

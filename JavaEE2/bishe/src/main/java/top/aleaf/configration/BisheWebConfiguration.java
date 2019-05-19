@@ -1,19 +1,22 @@
 package top.aleaf.configration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import top.aleaf.interceptor.LoginInterceptor;
 import top.aleaf.interceptor.PassportInterceptor;
 
+import javax.annotation.Resource;
+
+/**
+ * @author 郭新晔
+ */
 @Component
 public class BisheWebConfiguration extends WebMvcConfigurerAdapter {
-    @Autowired
-    PassportInterceptor passportInterceptor;
-
-    @Autowired
-    LoginInterceptor loginInterceptor;
+    @Resource
+    private PassportInterceptor passportInterceptor;
+    @Resource
+    private LoginInterceptor loginInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">角色管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/role')">
+                        角色管理
                     </h6>
                 </div>
             </div>
@@ -45,7 +47,7 @@
                             <div class="form-group">
                                 <label class="">详情</label>
                                 <div class="col-sm-11">
-                            <textarea class="form-textarea" name="detail" cols="70" rows="7">权限详情</textarea>
+                            <textarea class="form-textarea" name="detail" cols="70" rows="7" placeholder="权限详情"></textarea>
                                 </div>
                             </div>
 

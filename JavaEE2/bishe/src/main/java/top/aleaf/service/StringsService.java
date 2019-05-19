@@ -1,22 +1,23 @@
 package top.aleaf.service;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.aleaf.mapper.StringsMapper;
 import top.aleaf.model.Strings;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Service
 public class StringsService {
-    @Autowired
+    @Resource
     private StringsMapper stringsMapper;
 
     public boolean save(Strings strings) {
@@ -57,9 +58,11 @@ public class StringsService {
             PageHelper.startPage(strings.getPage(), strings.getRows());
         }
         StringBuilder builder = new StringBuilder("");
-        if (strings.getEntityField() != null && strings.getEntityType() != null) {
+        if (strings.getEntityField() != null) {
+            builder.append(" and entity_field like '%").append(strings.getEntityField()).append("%' ");
+        }
+        if (null != strings.getEntityType()) {
             builder.append(" and entity_type=").append(strings.getEntityType()).append(" ");
-            builder.append(" and entity_field='").append(strings.getEntityField()).append("' ");
         }
         return stringsMapper.selectByExample(GeneralExample.getBaseAndConditionExample(
                 Strings.class, builder.toString(), true

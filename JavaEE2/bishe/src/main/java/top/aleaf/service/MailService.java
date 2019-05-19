@@ -4,7 +4,6 @@ import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import javax.annotation.Resource;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -20,13 +20,14 @@ import java.util.Properties;
 
 /**
  *
+ * @author 郭新晔
  */
 @Service
 public class MailService implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(MailSender.class);
     private JavaMailSenderImpl mailSender;
 
-    @Autowired
+    @Resource
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
     /**

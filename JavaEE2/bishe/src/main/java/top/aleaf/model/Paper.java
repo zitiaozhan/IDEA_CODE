@@ -17,12 +17,13 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class Paper extends BaseEntity {
     private String name;
-    private Integer firstAuthor;
+    private String firstAuthor;
     private String moreAuthor;
     private String firstSignatureUnit;
     private String periodicalName;
@@ -47,11 +48,11 @@ public class Paper extends BaseEntity {
         return this;
     }
 
-    public Integer getFirstAuthor() {
+    public String getFirstAuthor() {
         return firstAuthor;
     }
 
-    public Paper setFirstAuthor(Integer firstAuthor) {
+    public Paper setFirstAuthor(String firstAuthor) {
         this.firstAuthor = firstAuthor;
         return this;
     }

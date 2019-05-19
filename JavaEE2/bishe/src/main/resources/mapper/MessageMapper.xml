@@ -4,45 +4,69 @@
 <mapper namespace="top.aleaf.mapper.MessageMapper">
     <sql id="table">message</sql>
     <sql id="selectFields">id, from_id,to_id,content,created_date,has_read,conversation_id,status</sql>
+    <sql id="insertFields">from_id,to_id,content,created_date,has_read,conversation_id,status</sql>
+
     <select id="selectSearchByName" resultType="top.aleaf.model.Message">
         SELECT
         <include refid="selectFields"/>
         FROM
         (
-            SELECT
-            <include refid="selectFields"/>
-            FROM
-            <include refid="table"/>
-            WHERE status!=1
+        SELECT
+        <include refid="selectFields"/>
+        FROM
+        <include refid="table"/>
+        WHERE status!=1
+        AND
+        (
+        (
+        to_id=#{myId}
+        <if test="ids.size() > 0">
             AND
-            (
-                (
-                    to_id=#{myId}
-                    <if test="ids.size() > 0">
-                        AND
-                        from_id in
-                        <foreach item="item" index="index" collection="ids"
-                                 open="(" separator="," close=")">
-                            #{item}
-                        </foreach>
-                    </if>
-                )
-                OR
-                (
-                    from_id=#{myId}
-                    <if test="ids.size() > 0">
-                        AND
-                        to_id in
-                        <foreach item="item" index="index" collection="ids"
-                                 open="(" separator="," close=")">
-                            #{item}
-                        </foreach>
-                    </if>
-                )
-            )
-            ORDER BY id DESC
+            from_id in
+            <foreach item="item" index="index" collection="ids"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        )
+        OR
+        (
+        from_id=#{myId}
+        <if test="ids.size() > 0">
+            AND
+            to_id in
+            <foreach item="item" index="index" collection="ids"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        )
+        )
+        ORDER BY id DESC
         ) AS help
         GROUP BY conversation_id
         ORDER BY created_date desc
     </select>
+
+    <insert id="insertList" parameterType="java.util.List">
+        INSERT INTO
+        <include refid="table"/>
+        <trim prefix="(" suffix=")">
+            <include refid="insertFields"/>
+        </trim>
+        <trim prefix="values" suffix=";">
+            <foreach collection="messageList" item="message" separator=",">
+                <trim prefix="(" suffix=")">
+                    #{message.fromId,jdbcType=NUMERIC},
+                    #{message.toId,jdbcType=NUMERIC},
+                    #{message.content,jdbcType=VARCHAR},
+                    #{message.createdDate,jdbcType=TIMESTAMP},
+                    #{message.hasRead,jdbcType=NUMERIC},
+                    #{message.conversationId,jdbcType=VARCHAR},
+                    #{message.status,jdbcType=NUMERIC}
+                </trim>
+            </foreach>
+        </trim>
+    </insert>
+
 </mapper>

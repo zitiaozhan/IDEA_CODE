@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">教材管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/teachingMaterial')">
+                        教材管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/teachingMaterial/edit" method="post">
                             <#if teachingMaterial??>
                                 <input type="hidden" name="id" value="${teachingMaterial.id}"/>
+                                <input type="hidden" name="status" value="${teachingMaterial.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">教材名称</label>
@@ -66,16 +69,28 @@
                                 <label class="">教材作者</label>
                                 <div class="col-sm-3">
                                     <#if teachingMaterial??>
-                                        <input type="hidden" name="author" value="${teachingMaterial.author}">
-                                        <input type="text" class="form-control redisabled"
-                                               placeholder="教材作者"
-                                               required="required" disabled="disabled"
-                                               value="${authorName}">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="教材作者编号" name="author"
+                                                   required="required" value="${teachingMaterial.author}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${teachingMaterial.author}">
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="教材作者"
+                                                   value="${authorName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="author" value="${localUser.id}">
-                                        <input type="text" class="form-control"
-                                               value="${localUser.name}" placeholder="教材作者"
-                                               required="required" disabled="disabled" >
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="author" placeholder="教材作者编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="教材作者"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                                 <label class="">教材字数</label>
@@ -83,15 +98,15 @@
                                     <#if teachingMaterial??>
                                         <input type="number" class="form-control"
                                                name="wordNumber" placeholder="教材字数"
-                                               required="required" min="1000"
+                                               required="required" min="0"
                                                value="${teachingMaterial.wordNumber}"
                                                disabled="disabled">
                                     <#else>
                                         <input type="number" class="form-control"
                                                name="wordNumber" placeholder="教材字数"
-                                               min="1000" required="required">
+                                               min="0" required="required">
                                     </#if>
-                                </div>字
+                                </div>万字
                             </div>
 
                             <div class="form-group">
@@ -213,19 +228,22 @@
                                 <label class="">作者排序</label>
                                 <div class="col-sm-11">
                                     <#if teachingMaterial??>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7"
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  cols="70" rows="7" placeholder="其他作者排序"
+                                                  onmouseout="validateMoreAuthor('其他作者排序')"
                                                   disabled="disabled">${teachingMaterial.moreAuthor}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7">其他作者排序</textarea>
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  onmouseout="validateMoreAuthor('其他作者排序')"
+                                                  cols="70" rows="7" placeholder="其他作者排序"></textarea>
                                     </#if>
-                                </div>（使用中文逗号隔开）
+                                </div>（填入作者编号，使用英文逗号隔开）
+                                <p class="warn_div" style="color: red;"></p>
                             </div>
 
                             <div class="content-form-submit" align="center">
                                 <#if teachingMaterial??>
-                                    <#if localRole.detail!='teacher'>
+                                    <#if (teachingMaterial.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                         <input class="content-submit" id="edit_btn" type="button"
                                                value="编辑">
                                     </#if>

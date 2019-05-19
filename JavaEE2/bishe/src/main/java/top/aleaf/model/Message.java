@@ -17,6 +17,7 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  */
 @Component
 public class Message extends BaseEntity {

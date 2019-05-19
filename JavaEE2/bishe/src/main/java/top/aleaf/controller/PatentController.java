@@ -1,9 +1,9 @@
 package top.aleaf.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,38 +11,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.aleaf.model.*;
-import top.aleaf.service.InfoTypeService;
+import top.aleaf.model.enumModel.EntityType;
+import top.aleaf.model.enumModel.UserRoleEnum;
 import top.aleaf.service.PatentService;
 import top.aleaf.service.UserService;
-import top.aleaf.sync.EventModel;
-import top.aleaf.sync.EventProducer;
 import top.aleaf.sync.EventType;
+import top.aleaf.utils.ConstantUtil;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/12 0012
  */
 @Controller
 public class PatentController {
     public static final Logger LOGGER = LoggerFactory.getLogger(PatentController.class);
-    @Autowired
+    @Resource
     private PatentService patentService;
-    @Autowired
+    @Resource
     private UserService userService;
-    @Autowired
-    private InfoTypeService infoTypeService;
-    @Autowired
-    private EventProducer eventProducer;
-    @Autowired
+    @Resource
+    private BaseController baseController;
+    @Resource
     private HostHolder hostHolder;
 
     @RequestMapping(path = {"/patent"})
     public String showAll(@RequestParam(value = "msg", required = false) String msg,
+                          @RequestParam(value = "part", required = false) boolean part,
+                          @RequestParam(value = "id", required = false, defaultValue = "0") int id,
                           Patent patent, Model model) {
         try {
             User localUser = hostHolder.getUser();
@@ -51,25 +52,26 @@ public class PatentController {
                 return "redirect:/index";
             }
 
-            List<Patent> patentList = new ArrayList<>();
-            if (localRole != null) {
-                if ("教师".equals(localRole.getName())) {
-                    patent.setCreatedId(localUser.getId());
-                }
-                patentList = this.patentService.getAll(patent);
+            List<Patent> patentList = Lists.newArrayList();
+            if (!part && UserRoleEnum.TEACHER.getDesc().equals(localRole.getName())) {
+                patent.setCreatedId(localUser.getId());
             }
-            List<ViewObject> vos = new ArrayList<>();
+            if (id > 0) {
+                patent.setId(id);
+            }
+            patentList = this.patentService.getAll(patent);
+            List<ViewObject> vos = Lists.newArrayList();
             for (Patent item : patentList) {
                 ViewObject vo = new ViewObject();
                 vo.set("patent", item);
-                vo.set("author", userService.getByPrimaryKey(item.getAuthor()));
+                vo.set("author", userService.getByNumber(item.getAuthor()));
                 vos.add(vo);
             }
             model.addAttribute("vos", vos);
             model.addAttribute("nowDate", new Date());
 
             //分页实现
-            model.addAttribute("pageInfo", new PageInfo<Patent>(patentList));
+            model.addAttribute("pageInfo", new PageInfo<>(patentList));
             model.addAttribute("patent", patent);
 
             if (msg != null) {
@@ -84,7 +86,7 @@ public class PatentController {
 
     @RequestMapping(path = {"/patent/edit"}, method = RequestMethod.POST)
     public String editPatent(Patent patent, Model model) {
-        String msg = null;
+        String msg;
         try {
             boolean isSave = patent.getId() == null;
             User localUser = hostHolder.getUser();
@@ -92,17 +94,26 @@ public class PatentController {
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ((isSave && "manager".equals(localRole.getDetail())) || (!isSave && "teacher".equals(localRole.getDetail()))) {
+            boolean limitOperate = (isSave && UserRoleEnum.MANAGER.getValue().equals(localRole.getDetail()));
+            if (limitOperate) {
                 msg = "受限制的操作";
             } else {
                 if (isSave && localUser != null) {
                     patent.setCreatedId(localUser.getId());
                     patent.setCreatedDate(new Date());
                 }
-
-                msg = this.patentService.save(patent) ?
+                boolean result = this.patentService.save(patent);
+                msg = result ?
                         (isSave ? "添加成功!" : "更新成功!") :
                         (isSave ? "添加失败!" : "更新失败!");
+                //发送到消息队列
+                if (!isSave && result) {
+                    Patent entity = this.patentService.getByPrimaryKey(patent.getId());
+                    int status = entity.getStatus();
+                    if (status == ConstantUtil.PROJECT_STATUS_SUCCESS || ConstantUtil.PROJECT_STATUS_REFUSE == status) {
+                        baseController.generalEventModelAndSend(patent.getId(), EntityType.PATENT, null, status, EventType.REEDIT);
+                    }
+                }
             }
         } catch (Exception e) {
             LOGGER.error("专利编辑出错");
@@ -124,7 +135,7 @@ public class PatentController {
             if (patentId != null) {
                 Patent patent = this.patentService.getByPrimaryKey(patentId);
                 model.addAttribute("patent", patent);
-                model.addAttribute("authorName", this.userService.getByPrimaryKey(patent.getAuthor()).getName());
+                model.addAttribute("authorName", this.userService.getByNumber(patent.getAuthor()).getName());
             }
         } catch (Exception e) {
             LOGGER.error("专利数据准备出错");
@@ -135,17 +146,27 @@ public class PatentController {
 
     @RequestMapping(path = {"/patent/delete/{patentId}"})
     public String delete(@PathVariable("patentId") int patentId, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
             User localUser = hostHolder.getUser();
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ("manager".equals(localRole.getDetail()) || ("teacher".equals(localRole.getDetail()) && !localUser.getId().equals(this.patentService.getByPrimaryKey(patentId).getCreatedId()))) {
+            boolean limitOperate = UserRoleEnum.MANAGER.getValue().equals(localRole.getDetail()) || (UserRoleEnum.TEACHER.getValue().equals(localRole.getDetail()) && !localUser.getId().equals(this.patentService.getByPrimaryKey(patentId).getCreatedId()));
+            if (limitOperate) {
                 msg = "受限制的操作";
             } else {
-                msg = this.patentService.delete(patentId) ? "删除成功" : "删除失败";
+                Patent entity = this.patentService.getByPrimaryKey(patentId);
+                boolean result = this.patentService.delete(patentId);
+                msg = result ? "删除成功" : "删除失败";
+                //发送到消息队列
+                if (result && null != entity) {
+                    int status = entity.getStatus();
+                    if (status == ConstantUtil.PROJECT_STATUS_SUCCESS || ConstantUtil.PROJECT_STATUS_REFUSE == status) {
+                        baseController.generalEventModelAndSend(patentId, EntityType.PATENT, null, status, EventType.DELETE);
+                    }
+                }
             }
         } catch (Exception e) {
             LOGGER.error("专利删除出错");
@@ -158,34 +179,29 @@ public class PatentController {
 
     @RequestMapping(path = {"/patent/approve/{patentId}"})
     public String approve(@PathVariable("patentId") int patentId,
-                          @RequestParam("status") int status, Model model) {
-        String msg = null;
+                          @RequestParam("status") int status, Model model,
+                          @RequestParam(value = "option", required = false) String option) {
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            User localUser = hostHolder.getUser();
             if (localRole == null) {
                 return "redirect:/index";
             }
-            if ("teacher".equals(localRole.getDetail())) {
+            if (UserRoleEnum.TEACHER.getValue().equals(localRole.getDetail())) {
                 msg = "受限制的操作";
             } else {
                 boolean result = this.patentService.setStatus(patentId, status);
                 msg = result ? "审批成功" : "审批失败";
+                if (!result) {
+                    model.addAttribute("msg", msg);
+                    return "/patent";
+                }
+                if (com.google.common.base.Strings.isNullOrEmpty(option)) {
+                    option = "审批通过";
+                }
 
-                int resultStatus = result ? 1 : 2;
-                Patent patent = this.patentService.getByPrimaryKey(patentId);
-                String projectName = patent.getName();
-                String projectUrl = "/patent?patentId=" + patentId;
-                EventModel eventModel = new EventModel();
-                eventModel.setActorId(localUser.getId());
-                eventModel.setEntityId(patentId);
-                eventModel.setEntityType(this.infoTypeService.getByPrimaryKey(5));
-                eventModel.setEventOwnerId(patent.getCreatedId());
-                eventModel.setEventType(EventType.APPROVE);
-                eventModel.addExt("resultStatus", resultStatus + "");
-                eventModel.addExt("projectName", projectName);
-                eventModel.addExt("projectUrl", projectUrl);
-                this.eventProducer.fireEvent(eventModel);
+                //发送到消息队列
+                baseController.generalEventModelAndSend(patentId, EntityType.PATENT, option, status, EventType.APPROVE);
             }
         } catch (Exception e) {
             LOGGER.error("专利审批出错");

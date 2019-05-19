@@ -87,7 +87,7 @@
                             </#if>
                         </div>
                         <div class="td w10">
-                        ${vo['author']?html}
+                        ${vo['author'].name?html}
                         </div>
                         <div class="td w20">
                             <#if vo['patent'].moreAuthor?length gt 21>
@@ -109,24 +109,22 @@
                         ${vo['patent'].awardDate?html}
                         </div>
                         <div class="td w10">
-                            <#if localRole.detail!='manager'&&patent.status!=4>
+                            <#if patent.status!=4&&((localRole.detail=='teacher'&&patent.status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/patent/delete/${vo['patent'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
-                            <#if localRole.detail!='teacher'>
                             <a href="#" onclick="modify_site('/patent/forEdit?patentId=${vo['patent'].id}')"
                                class="button-word2 btn_ajax_confirm">查看</a>
-                            </#if>
                             <#if patent.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/patent/approve/${vo['patent'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/patent/approve/${vo['patent'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/patent/approve/${vo['patent'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/patent/approve/${vo['patent'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if patent.status==4>
-                                <a href="#" onclick="modify_site('/patent/approve/${vo['patent'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/patent/approve/${vo['patent'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -135,7 +133,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 〈〉
+ * @author 郭新晔
  */
 @Component
 public class HostHolder {

@@ -3,7 +3,6 @@ package top.aleaf.controller;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,22 +12,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import top.aleaf.model.HostHolder;
 import top.aleaf.model.Role;
 import top.aleaf.model.ViewObject;
+import top.aleaf.model.enumModel.UserRoleEnum;
 import top.aleaf.service.RoleService;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/12 0012
  */
 @Controller
 public class RoleController {
     public static final Logger LOGGER = LoggerFactory.getLogger(RoleController.class);
-    @Autowired
+    @Resource
     private RoleService roleService;
-    @Autowired
+    @Resource
     private HostHolder hostHolder;
 
     @RequestMapping(path = {"/role"})
@@ -36,7 +38,7 @@ public class RoleController {
                           Role role, Model model) {
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
 
@@ -48,12 +50,10 @@ public class RoleController {
             model.addAttribute("msg", msg);
 
             //分页实现
-            model.addAttribute("pageInfo", new PageInfo<Role>(roleList));
+            model.addAttribute("pageInfo", new PageInfo<>(roleList));
             model.addAttribute("role", role);
 
-            if (msg != null) {
-                model.addAttribute("msg", msg);
-            }
+            model.addAttribute("msg", msg);
         } catch (Exception e) {
             LOGGER.error("角色列表加载出错");
             e.printStackTrace();
@@ -63,10 +63,10 @@ public class RoleController {
 
     @RequestMapping(path = {"/role/edit"}, method = RequestMethod.POST)
     public String editRole(Role role, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
 
@@ -88,7 +88,7 @@ public class RoleController {
                             Model model) {
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
             if (roleId != null) {
@@ -104,10 +104,10 @@ public class RoleController {
 
     @RequestMapping(path = {"/role/delete/{roleId}"})
     public String delete(@PathVariable("roleId") int roleId, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
             msg = this.roleService.delete(roleId) ? "删除成功" : "删除失败";

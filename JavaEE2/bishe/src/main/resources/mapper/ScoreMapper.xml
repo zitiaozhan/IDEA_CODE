@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.aleaf.mapper.ScoreMapper">
+
+    <sql id="table">SCORE</sql>
+
+    <sql id="selectFields">id,user_number,name,project_num,score_source,sat_score,status</sql>
+
+    <select id="selectByNumberList" parameterType="java.util.List" resultType="top.aleaf.model.Score">
+        SELECT
+        <include refid="selectFields"/>
+        FROM
+        <include refid="table"/>
+        WHERE user_number IN
+        <foreach collection="numberList" item="number" open="(" close=")" separator=",">
+            #{number}
+        </foreach>
+        ORDER BY id DESC
+    </select>
+
+</mapper>

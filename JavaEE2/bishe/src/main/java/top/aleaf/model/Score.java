@@ -10,72 +10,22 @@
  */
 package top.aleaf.model;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
+@Data
 public class Score extends BaseEntity {
-    private Integer userId;
+    private String userNumber;
     private String name;
+    private Integer projectNum;
     private String scoreSource;
-    private Float satScore;
+    private Double satScore;
     private Integer status = 0;
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public Score setUserId(Integer userId) {
-        this.userId = userId;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getScoreSource() {
-        return scoreSource;
-    }
-
-    public Score setScoreSource(String scoreSource) {
-        this.scoreSource = scoreSource;
-        return this;
-    }
-
-    public Float getSatScore() {
-        return satScore;
-    }
-
-    public Score setSatScore(Float satScore) {
-        this.satScore = satScore;
-        return this;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public Score setStatus(Integer status) {
-        this.status = status;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "Score{" +
-                "userId=" + userId +
-                ", scoreSource='" + scoreSource + '\'' +
-                ", satScore=" + satScore +
-                ", status=" + status +
-                '}';
-    }
 }

@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">获奖信息管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/prize')">
+                        获奖信息管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/prize/edit" method="post">
                             <#if prize??>
                                 <input type="hidden" name="id" value="${prize.id}"/>
+                                <input type="hidden" name="status" value="${prize.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">项目名称</label>
@@ -50,17 +53,28 @@
                                 <label class="">获奖人员</label>
                                 <div class="col-sm-3">
                                     <#if prize??>
-                                        <input type="hidden" name="author" value="${prize.author}">
-                                        <input type="text" class="form-control redisabled"
-                                               placeholder="获奖人员"
-                                               required="required" value="${authorName}"
-                                               disabled="disabled" >
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="获奖人员编号" name="author"
+                                                   required="required" value="${prize.author}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${prize.author}">
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="获奖人员"
+                                                   value="${authorName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="author" value="${localUser.id}">
-                                        <input type="text" class="form-control"
-                                               value="${localUser.name}" placeholder="获奖人员"
-                                               required="required"
-                                               disabled="disabled" >
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="author" placeholder="获奖人员编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="author" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="获奖人员"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                             </div>
@@ -95,16 +109,19 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="">指导教师</label>
+                                <label class="">其它参与者</label>
                                 <div class="col-sm-11">
                                     <#if prize??>
-                                        <textarea class="form-textarea" name="guidanceTeacher"
-                                                  cols="70" rows="7"
+                                        <textarea class="form-textarea more-author" name="guidanceTeacher"
+                                                  cols="70" rows="7" placeholder="其它参与者"
+                                                  onmouseout="validateMoreAuthor('其它参与者')"
                                                   disabled="disabled">${prize.guidanceTeacher}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="guidanceTeacher"
-                                                  cols="70" rows="7">指导教师</textarea>
-                                    </#if>
+                                        <textarea class="form-textarea more-author" name="guidanceTeacher"
+                                                  onmouseout="validateMoreAuthor('其它参与者')"
+                                                  cols="70" rows="7" placeholder="其它参与者"></textarea>
+                                    </#if>（填入作者编号，使用英文逗号隔开）
+                                    <p class="warn_div" style="color: red;"></p>
                                 </div>
                             </div>
 
@@ -178,7 +195,7 @@
 
                             <div class="content-form-submit" align="center">
                                 <#if prize??>
-                                    <#if localRole.detail!='teacher'>
+                                    <#if (prize.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                         <input class="content-submit" id="edit_btn" type="button"
                                                value="编辑">
                                     </#if>

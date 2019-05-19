@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * 配置使用freeMarker渲染模版的类
+ * @author 郭新晔
  */
 @Configuration
 public class TemplateConfig {

@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Repository
@@ -45,4 +46,10 @@ public interface MessageMapper extends Mapper<Message> {
                               @Param("toId") int toId);
 
     public List<Message> selectSearchByName(@Param("ids") List<Integer> ids, @Param("myId") int myId);
+
+    /**
+     * 批量插入
+     * @param messageList  消息列表
+     */
+    void insertList(@Param("messageList") List<Message> messageList);
 }

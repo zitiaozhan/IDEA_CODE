@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">用户设置
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/user/index')">
+                        用户设置
                     </h6>
                 </div>
             </div>
@@ -48,8 +50,8 @@
                                 </div>
                                 <label class="">姓名</label>
                                 <div class="col-sm-3">
-                                    <input type="text" class="form-control"
-                                           disabled="disabled" value="${localUser.name}">
+                                    <input type="text" class="form-control" name="name"
+                                           value="${localUser.name}">
                                 </div>
                             </div>
 
@@ -71,7 +73,7 @@
                                     <input type="text" class="form-control"
                                            name="phone" placeholder="电话"
                                            value="${localUser.phone!""}"
-                                           id="phone" onmouseover="validatePhone()">
+                                           id="phone" onmouseout="validatePhone()">
                                 </div>
                             </div>
 
@@ -80,7 +82,7 @@
                                 <div class="col-sm-11">
                                     <input type="email" class="form-control_long"
                                            placeholder="邮件"
-                                           disabled="disabled" value="${localUser.mail}">
+                                           name="mail" value="${localUser.mail}">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -130,16 +132,14 @@
                                 <div class="col-sm-3">
                                     <input type="password" class="form-control"
                                            name="password" placeholder="确认新密码"
-                                           id="repwd" onmouseover="validate()" minlength="6"
+                                           id="repwd" onmouseout="validate()" minlength="6"
                                            required="required">
                                 </div>
-                                <div class="col-sm-3">
-                                    <p class="warn_div" style="color: red;"> </p>
-                                </div>
+                                <p class="warn_div" style="color: red;"> </p>
                             </div>
 
                             <div class="content-form-submit" align="center">
-                                <input class="content-submit register-submit" type="submit" value="修改密码">
+                                <input class="register-submit" type="submit" value="修改密码">
                             </div>
                         </form>
                     </div>

@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * 〈〉
+ * @author 郭新晔
  * @create 2019/1/18 0018
  */
 public class ViewObject {

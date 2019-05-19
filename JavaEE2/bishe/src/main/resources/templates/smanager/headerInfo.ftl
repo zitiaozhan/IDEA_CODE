@@ -4,6 +4,15 @@
             <a class="add_entity" href="/${type}/forEdit">新增</a>
         </#if>
     </div>
+    <#--新增公告-->
+    <#if isMessage??>
+        <div class="add_headerDiv">
+            <#if isMessage&&localRole.detail=='smanager'>
+                <a class="add_entity" href="/backJumpTo?path=smanager/edit/bulletinEdit">新增公告</a>
+            </#if>
+        </div>
+    </#if>
+
     <div class="form_headerDiv">
         <form action="/${type}" method="post">
             <input class="form_input" name="${field}" type="text"
@@ -11,7 +20,7 @@
             <#if stringsType?exists&&stringsType>
                 <select class="form-control" name="entityType">
                     <#list stringsTypeList as item>
-                        <option value="${item.id}">${item.entityName!"出错"}</option>
+                        <option value="${item.value}">${item.desc!"加载出错..."}</option>
                     </#list>
                 </select>
             </#if>

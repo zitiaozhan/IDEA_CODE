@@ -50,21 +50,24 @@
             <div class="offcial-table tr-border margin-big-top clearfix">
                 <div class="tr-th clearfix">
                     <div class="th w15">
+                        编号
+                    </div>
+                    <div class="th w15">
                         名称
                     </div>
-                    <div class="th w15">
+                    <div class="th w10">
                         角色
                     </div>
-                    <div class="th w15">
+                    <div class="th w10">
                         职称
                     </div>
                     <div class="th w15">
                         电话
                     </div>
-                    <div class="th w20">
+                    <div class="th w10">
                         邮件
                     </div>
-                    <div class="th w20">
+                    <div class="th w25">
                         操作
                     </div>
                 </div>
@@ -72,26 +75,33 @@
                 <#list vos as vo>
                     <div class="tr clearfix border-bottom-none">
                         <div class="td w15">
+                        ${vo['user'].number?html}
+                        </div>
+                        <div class="td w15">
                         ${vo['user'].name?html}
                         </div>
-                        <div class="td w15">
+                        <div class="td w10">
                         ${vo['roleName']?html}
                         </div>
-                        <div class="td w15">
+                        <div class="td w10">
                         ${vo['user'].profession!"未填写"}
                         </div>
                         <div class="td w15">
                         ${vo['user'].phone!"未填写"}
                         </div>
-                        <div class="td w20">
+                        <div class="td w10">
                         ${vo['user'].mail?html}
                         </div>
-                        <div class="td w20">
+                        <div class="td w25">
                         <#if localRole.detail=='smanager'>
                             <a href="#" onclick="del_site('/user/delete/${vo['user'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
-                            <a href="#" onclick="modify_site('/user/forEdit?userId=${vo['user'].id}')"
+                            <a href="#" onclick="confirm_redirect('修改','/user/forEdit?userId=${vo['user'].id}')"
                                class="button-word2 btn_ajax_confirm">修改</a>
+                            <a href="#" onclick="modify_site('/message/send?toId=${vo['user'].id}')"
+                               class="button-word2 btn_ajax_confirm">发消息</a>
+                            <a href="#" onclick="modify_site('/backJumpTo?path=smanager/view/dataVisualization&param1=${vo['user'].id}')"
+                               class="button-word2 btn_ajax_confirm">用户数据</a>
                         </#if>
                         </div>
                     </div>
@@ -99,7 +109,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

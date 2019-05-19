@@ -1,13 +1,3 @@
-/**
- * Copyright (C), 2015-2019, XXX有限公司
- * FileName: BisheUtil
- * Author:   郭新晔
- * Date:     2019/2/11 0011 14:19
- * Description:
- * History:
- * <author>          <time>          <version>          <desc>
- * 作者姓名           修改时间           版本号              描述
- */
 package top.aleaf.utils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,16 +7,29 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
 /**
  * 〈〉
+ *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 public class BisheUtil {
     public static final Logger logger = LoggerFactory.getLogger(BisheUtil.class);
 
+    /**
+     * 保留指定位小数
+     *
+     * @param num     小数
+     * @param pattern 模式
+     * @return 结果
+     */
+    public static String doubleFormat(double num, String pattern) {
+        return pattern == null ? null : new DecimalFormat(pattern).format(num);
+    }
 
     public static String getJSONString(int code) {
         JSONObject json = new JSONObject();
@@ -75,8 +78,7 @@ public class BisheUtil {
             int j = md.length;
             char str[] = new char[j * 2];
             int k = 0;
-            for (int i = 0; i < j; i++) {
-                byte byte0 = md[i];
+            for (byte byte0 : md) {
                 str[k++] = hexDigits[byte0 >>> 4 & 0xf];
                 str[k++] = hexDigits[byte0 & 0xf];
             }
@@ -91,7 +93,7 @@ public class BisheUtil {
         String ticket = null;
         if (request.getCookies() != null) {
             for (Cookie it : request.getCookies()) {
-                if (it.getName().equals("ticket")) {
+                if (it.getName().equals(ConstantUtil.TOKEN)) {
                     ticket = it.getValue();
                     break;
                 }

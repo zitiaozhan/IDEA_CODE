@@ -10,7 +10,7 @@
  */
 package top.aleaf.sync;
 
-import top.aleaf.model.InfoType;
+import top.aleaf.model.enumModel.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +18,7 @@ import java.util.Map;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/22 0022
  */
 public class EventModel {
@@ -29,7 +30,7 @@ public class EventModel {
     //给实体的ID
     private int entityId;
     //实体的类型
-    private InfoType entityType;
+    private EntityType entityType;
     //事件的拥有者，即事件发给谁，
     // 这里就是发布文章的人
     private int eventOwnerId;
@@ -70,11 +71,11 @@ public class EventModel {
         return this;
     }
 
-    public InfoType getEntityType() {
+    public EntityType getEntityType() {
         return entityType;
     }
 
-    public EventModel setEntityType(InfoType entityType) {
+    public EventModel setEntityType(EntityType entityType) {
         this.entityType = entityType;
         return this;
     }

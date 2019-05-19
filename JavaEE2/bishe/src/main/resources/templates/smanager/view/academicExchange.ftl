@@ -100,26 +100,26 @@
                             ${vo['academicExchange'].remark?html}
                             </#if>
                         </div>
-                        <div class="td w5">
-                            <#if localRole.detail!='manager'&&academicExchange.status!=4>
+                        <div class="td w15">
+                            <#if academicExchange.status!=4&&((localRole.detail=='teacher'&&academicExchange.status==0)||(localRole.detail=='smanager'))>
                                 <a href="#" onclick="del_site('/academicExchange/delete/${vo['academicExchange'].id}')"
                                    class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
-                            <#if localRole.detail!='teacher'>
+                            <#if (academicExchange.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                 <a href="#" onclick="modify_site('/academicExchange/forEdit?academicExchangeId=${vo['academicExchange'].id}')"
                                    class="button-word2 btn_ajax_confirm">修改</a>
                             </#if>
 
                             <#if academicExchange.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/academicExchange/approve/${vo['academicExchange'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/academicExchange/approve/${vo['academicExchange'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/academicExchange/approve/${vo['academicExchange'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/academicExchange/approve/${vo['academicExchange'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if academicExchange.status==4>
-                                <a href="#" onclick="modify_site('/academicExchange/approve/${vo['academicExchange'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/academicExchange/approve/${vo['academicExchange'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -128,7 +128,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

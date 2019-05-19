@@ -19,13 +19,13 @@ import tk.mybatis.mapper.util.StringUtil;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/19 0019
  */
 @Service
@@ -35,24 +35,24 @@ public class SensitiveFilterService implements InitializingBean {
     private static final String DEFAULT_REPLACEMENT = "***";
 
     class TrieNode {
-        //key:下一字符；value:对应节点
+        /** key:下一字符；value:对应节点 */
         private Map<Character, TrieNode> subNodes = new HashMap<>();
-        //是否为敏感词汇结束字符
+        /** 是否为敏感词汇结束字符 */
         private boolean isSensitiveEnd = false;
 
-        public void addSubNode(Character key, TrieNode value) {
+        void addSubNode(Character key, TrieNode value) {
             this.subNodes.put(key, value);
         }
 
-        public TrieNode getSubNode(Character key) {
+        TrieNode getSubNode(Character key) {
             return this.subNodes.get(key);
         }
 
-        public boolean isSensitiveEnd() {
+        boolean isSensitiveEnd() {
             return isSensitiveEnd;
         }
 
-        public void setSensitiveEnd(boolean sensitiveEnd) {
+        void setSensitiveEnd(boolean sensitiveEnd) {
             isSensitiveEnd = sensitiveEnd;
         }
     }
@@ -66,10 +66,10 @@ public class SensitiveFilterService implements InitializingBean {
         return !StringUtil.isLowercaseAlpha(c) && !StringUtil.isUppercaseAlpha(c) && (ic < 0x2E80 || ic > 0x9FFF);
     }
 
-    //创建根节点
+    /** 创建根节点 */
     private TrieNode rootNode = new TrieNode();
 
-    public void addSensitiveWord(String sensitiveWord) {
+    private void addSensitiveWord(String sensitiveWord) {
         TrieNode node = rootNode;
         for (int i = 0; i < sensitiveWord.length(); i++) {
             Character c = sensitiveWord.charAt(i);
@@ -110,7 +110,7 @@ public class SensitiveFilterService implements InitializingBean {
                 position = begin + 1;
                 begin = position;
                 node = rootNode;
-            } else if (node != null && node.isSensitiveEnd()) {
+            } else if (node.isSensitiveEnd()) {
                 sb.append(DEFAULT_REPLACEMENT);
                 position = position + 1;
                 begin = position;
@@ -127,11 +127,9 @@ public class SensitiveFilterService implements InitializingBean {
 
     /**
      * 初始化时加载敏感词汇文件，建立前缀树
-     *
      * @throws Exception
      */
     @Override
-
     public void afterPropertiesSet() throws Exception {
         rootNode = new TrieNode();
 
@@ -151,13 +149,4 @@ public class SensitiveFilterService implements InitializingBean {
         }
     }
 
-
-    public static void main(String[] args) {
-        /*SensitiveFilterService service = new SensitiveFilterService();
-        service.addSensitiveWord("色情");
-        service.addSensitiveWord("赌博");
-        System.out.println(service.filterSensitiveWord("%你好$色^&情|@"));*/
-
-        System.out.println(Arrays.toString("/||/index".split("\\|\\|")));
-    }
 }

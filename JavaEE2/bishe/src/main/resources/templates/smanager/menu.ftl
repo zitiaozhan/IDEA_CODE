@@ -48,12 +48,12 @@
             </ul>
         </div>
 
-        <#--横向项目-->
+        <#--横向/纵向项目-->
         <div class="sidebar-nav">
             <div class="sidebar-title">
                 <a href="#">
                     <span class="icon"><b class="fl icon-arrow-down"></b></span>
-                    <span class="text-normal">横向项目</span>
+                    <span class="text-normal">横纵向项目</span>
                 </a>
             </div>
             <ul class="sidebar-trans">
@@ -63,18 +63,6 @@
                         <span class="text-normal">横向项目</span>
                     </a>
                 </li>
-            </ul>
-        </div>
-
-        <#--纵向项目-->
-        <div class="sidebar-nav">
-            <div class="sidebar-title">
-                <a href="#">
-                    <span class="icon"><b class="fl icon-arrow-down"></b></span>
-                    <span class="text-normal">纵向项目</span>
-                </a>
-            </div>
-            <ul class="sidebar-trans">
                 <li>
                     <a href="/governmentProject">
                         <b class="sidebar-icon"><img src="../../images/icon_cost.png" width="16" height="16" /></b>

@@ -1,42 +1,47 @@
 package top.aleaf.service;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.common.base.Strings;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import top.aleaf.mapper.LoginTicketMapper;
 import top.aleaf.mapper.RoleMapper;
 import top.aleaf.mapper.UserMapper;
 import top.aleaf.model.LoginTicket;
 import top.aleaf.model.Role;
 import top.aleaf.model.User;
+import top.aleaf.model.enumModel.UserRoleEnum;
 import top.aleaf.utils.BisheUtil;
 import top.aleaf.utils.ConstantUtil;
 import top.aleaf.utils.DecryptUtil;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Service
 public class UserService {
-    @Autowired
+    @Resource
     private UserMapper userMapper;
-    @Autowired
+    @Resource
     private RoleMapper roleMapper;
-    @Autowired
+    @Resource
     private LoginTicketMapper ticketMapper;
-    @Autowired
+    @Resource
     private MailService mailService;
-    @Autowired
+    @Resource
     private SensitiveFilterService sensitiveFilterService;
 
     public Map<String, String> reg(String mail) {
         Map<String, String> map = new HashMap<>();
-        if (mail == null && mail.equals("")) {
+        if (Strings.isNullOrEmpty(mail)) {
             map.put("msg", "邮箱不能为空");
             return map;
         }
@@ -60,10 +65,54 @@ public class UserService {
         return map;
     }
 
+    /**
+     * 为重置密码做准备
+     *
+     * @param mail 邮箱
+     * @return 结果
+     */
+    public Map<String, String> forRepassword(String mail) {
+        Map<String, String> map = new HashMap<>();
+        if (Strings.isNullOrEmpty(mail)) {
+            map.put("msg", "邮箱不能为空");
+            return map;
+        }
+        if (!mail.matches("[\\w\\-]+@[a-z0-9A-Z]+(\\.[a-zA-Z]{2,4}){1,2}")) {
+            map.put("msg", "不规范的邮箱");
+            return map;
+        }
+        User user = getByMail(mail);
+        if (null == user) {
+            map.put("msg", "未注册过的邮箱");
+            return map;
+        }
+
+        Map<String, Object> model = new HashMap<>();
+        String validate = UUID.randomUUID().toString().substring(1, 7);
+        String mi = DecryptUtil.encrypt(validate + ConstantUtil.MAIL_VALIDATE_SPLIT + mail);
+        model.put("activeUrl", "http://localhost:8080/back/repasswordValidate?activeParam=" + mi);
+        if (mailService.sendWithHTMLTemplate(mail, "帐号找回密码", "mailActive.ftl", model)) {
+            map.put("validate", validate);
+        } else {
+            map.put("msg", "邮件发送失败");
+        }
+        return map;
+    }
+
+    public boolean repassword(String mail, String password) {
+        User user = getByMail(mail);
+        if (null == user) {
+            return false;
+        }
+        user.setSalt(UUID.randomUUID().toString().substring(1, 8));
+        user.setPassword(BisheUtil.MD5(password + user.getSalt()));
+        return save(user);
+    }
+
     public Map<String, String> register(User user) {
         Map<String, String> map = new HashMap<>();
-        if (user.getName() == null || user.getName().trim().length() <= 1) {
-            map.put("msg", "姓名不能为空");
+        if (Strings.isNullOrEmpty(user.getNumber())) {
+            map.put("msg", "编号不能为空");
             return map;
         }
         if (user.getPassword() == null || user.getPassword().trim().length() <= 0) {
@@ -74,7 +123,7 @@ public class UserService {
             map.put("msg", "密码长度必须5位以上");
             return map;
         }
-        if (user.getMail() == null || user.getMail().trim().equals("")) {
+        if (Strings.isNullOrEmpty(user.getMail())) {
             map.put("msg", "邮箱不能为空");
             return map;
         }
@@ -94,7 +143,7 @@ public class UserService {
         user.setSalt(UUID.randomUUID().toString().substring(1, 8));
         user.setPassword(BisheUtil.MD5(user.getPassword() + user.getSalt()));
         user.setRegDate(new Date());
-        user.setRoleId(roleMapper.selectOne(new Role().setName("教师")).getId());
+        user.setRoleId(roleMapper.selectOne(new Role().setName(UserRoleEnum.TEACHER.getDesc())).getId());
         int lineNum = this.userMapper.insert(user);
 
         if (lineNum > 0) {
@@ -105,32 +154,32 @@ public class UserService {
         return map;
     }
 
-    public Map<String, String> login(String mail, String password) {
+    public Map<String, String> login(String number, String password) {
         Map<String, String> map = new HashMap<>();
 
-        if (mail == null || mail.trim().length() <= 0) {
-            map.put("msg", "用户名为空");
+        if (Strings.isNullOrEmpty(number)) {
+            map.put("msg", "编号为空");
             return map;
         }
         if (password == null || password.trim().length() <= 0) {
             map.put("msg", "密码为空");
             return map;
         }
-        User us = getByMail(mail);
-        if (us != null && BisheUtil.MD5(password + us.getSalt()).equals(us.getPassword())) {
+        User us = getByNumber(number);
+        if (us != null && Objects.equals(BisheUtil.MD5(password + us.getSalt()), us.getPassword())) {
             Role role = new Role();
             role.setId(us.getRoleId());
             map.put("roleName", this.roleMapper.selectOne(role).getDetail());
             String ticket = this.addLoginTicket(us.getId());
             map.put("ticket", ticket);
         } else {
-            map.put("msg", "邮箱或密码错误");
+            map.put("msg", "编号或密码错误");
         }
 
         return map;
     }
 
-    public String addLoginTicket(int userId) {
+    private String addLoginTicket(int userId) {
         LoginTicket ticket = new LoginTicket();
         ticket.setUserId(userId);
         ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -148,7 +197,7 @@ public class UserService {
     }
 
     public boolean validatePwd(User us, String pwd) {
-        return pwd != null && BisheUtil.MD5(pwd + us.getSalt()).equals(us.getPassword());
+        return pwd != null && Objects.equals(BisheUtil.MD5(pwd + us.getSalt()), us.getPassword());
     }
 
     public boolean save(User user) {
@@ -165,6 +214,25 @@ public class UserService {
             user.setPassword(BisheUtil.MD5(user.getPassword() + salt));
             return this.userMapper.updateByPrimaryKeySelective(user) > 0;
         }
+    }
+
+    /**
+     * 批量插入
+     *
+     * @param userList 用户列表
+     */
+    @Transactional(rollbackFor = RuntimeException.class)
+    public void batchInsert(List<User> userList) {
+        if (CollectionUtils.isEmpty(userList)) {
+            return;
+        }
+        userList.forEach(user -> {
+            user.setName(this.sensitiveFilterService.filterSensitiveWord(user.getName()));
+            user.setSalt(UUID.randomUUID().toString().substring(1, 8));
+            user.setPassword(BisheUtil.MD5(user.getPassword() + user.getSalt()));
+            user.setRegDate(new Date());
+        });
+        this.userMapper.insertList(userList);
     }
 
     public boolean delete(User user) {
@@ -193,7 +261,19 @@ public class UserService {
                         User.class, " and mail='" + mail + "' ", true));
     }
 
-    public Integer getUserCount() {
+    /**
+     * 通过用户编号查询
+     *
+     * @param number
+     * @return
+     */
+    public User getByNumber(String number) {
+        return this.userMapper.selectOneByExample(
+                GeneralExample.getBaseAndConditionExample(
+                        User.class, " and number='" + number + "' ", true));
+    }
+
+    Integer getUserCount() {
         return this.userMapper.selectCount(new User());
     }
 
@@ -214,5 +294,28 @@ public class UserService {
         return userMapper.selectByExample(GeneralExample.getBaseAndConditionExample(
                 User.class, builder.toString(), true
         ));
+    }
+
+    /**
+     * 按用户编号查询
+     *
+     * @param numberList 用户编号列表
+     * @return 结果
+     */
+    public List<User> getUserByNumberList(List<String> numberList) {
+        return this.userMapper.selectByNumberList(numberList);
+    }
+
+    /**
+     * 数量
+     *
+     * @param roleId 用户角色
+     * @return 结果
+     */
+    public int getAllCount(int roleId) {
+        if (-1 == roleId) {
+            return this.userMapper.selectCount(new User().setStatus(null));
+        }
+        return this.userMapper.selectCount(new User().setStatus(null).setRoleId(roleId));
     }
 }

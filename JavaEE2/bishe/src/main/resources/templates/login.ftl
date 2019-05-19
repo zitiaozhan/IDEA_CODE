@@ -29,8 +29,8 @@
 					<form class="login-form" action="/back/login" method="post" autocomplete="off">
 						<div class="login-box border text-small" id="box">
 							<div class="name border-bottom">
-								<input type="email" placeholder="邮箱" id="username"
-									   name="mail" datatype="*" nullmsg="popup('请填写邮箱')"
+								<input type="number" placeholder="编号" id="username"  minlength="3" maxlength="15"
+									   name="number" datatype="*" nullmsg="popup('请填写编号')"
 									   required="required">
 							</div>
 							<div class="pwd">
@@ -47,7 +47,7 @@
 						<input type="submit" class="btn text-center login-btn" value="立即登录">
 					</form>
 					<div class="forget">
-						<a href="/toRepassword" class="forget-pwd text-small fl">忘记登录密码？</a>
+						<a href="#" onclick="modify_site_tip('需要验证邮箱才能找回密码','/backJumpTo?path=mailInput&param1=repassword')" class="forget-pwd text-small fl">忘记登录密码？</a>
 						<a href="/toRegister" class="forget-new text-small fr" id="forget-new">创建一个新账号</a>
 					</div>
 				</div>

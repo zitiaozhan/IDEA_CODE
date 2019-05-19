@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">软件著作管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/softwareWork')">
+                        软件著作管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/softwareWork/edit" method="post">
                             <#if softwareWork??>
                                 <input type="hidden" name="id" value="${softwareWork.id}"/>
+                                <input type="hidden" name="status" value="${softwareWork.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">软件名称</label>
@@ -186,21 +189,24 @@
                                 <label class="">开发人员</label>
                                 <div class="col-sm-11">
                                     <#if softwareWork??>
-                                        <textarea class="form-textarea" name="author"
-                                                  cols="70" rows="7"
+                                        <textarea class="form-textarea more-author" name="author"
+                                                  cols="70" rows="7" placeholder="开发人员"
                                                   disabled="disabled"
+                                                  onmouseout="validateMoreAuthor('开发人员')"
                                                   required="required">${softwareWork.author}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="author"
+                                        <textarea class="form-textarea more-author" name="author"
                                                   cols="70" rows="7"
-                                                  required="required">开发人员（必须包含自己）</textarea>
+                                                  onmouseout="validateMoreAuthor('开发人员')"
+                                                  required="required" placeholder="开发人员">${localUser.number}</textarea>
                                     </#if>
-                                </div>（必须包含自己）
+                                </div>（填入作者编号，使用英文逗号隔开）
+                                <p class="warn_div" style="color: red;"></p>
                             </div>
 
                             <div class="content-form-submit" align="center">
                                 <#if softwareWork??>
-                                    <#if localRole.detail!='teacher'>
+                                    <#if (softwareWork.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                     <input class="content-submit" id="edit_btn" type="button"
                                            value="编辑">
                                     </#if>

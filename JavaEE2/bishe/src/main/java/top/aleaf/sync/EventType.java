@@ -13,10 +13,15 @@ package top.aleaf.sync;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/22 0022
  */
 public enum EventType {
-    APPROVE(1);
+    APPROVE(1),
+    REEDIT(2),
+    DELETE(3),
+    /** 注销用户 */
+    LOGOUT_USER(4);
 
     private int value;
 

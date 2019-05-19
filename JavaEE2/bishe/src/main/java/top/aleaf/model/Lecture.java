@@ -17,12 +17,13 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class Lecture extends BaseEntity {
     private String name;
-    private Integer rapporteur;
+    private String rapporteur;
     private String rapporteurUnit;
     private String date;
     private String address;
@@ -43,11 +44,11 @@ public class Lecture extends BaseEntity {
         return this;
     }
 
-    public Integer getRapporteur() {
+    public String getRapporteur() {
         return rapporteur;
     }
 
-    public Lecture setRapporteur(Integer rapporteur) {
+    public Lecture setRapporteur(String rapporteur) {
         this.rapporteur = rapporteur;
         return this;
     }

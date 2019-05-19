@@ -13,27 +13,29 @@ package top.aleaf.sync;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.aleaf.utils.JedisAdapter;
 import top.aleaf.utils.KeysUtil;
 
+import javax.annotation.Resource;
+
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/22 0022
  */
 @Service
 public class EventProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
 
-    @Autowired
+    @Resource
     private JedisAdapter jedisAdapter;
 
     public boolean fireEvent(EventModel eventModel) {
         try {
             String model = JSON.toJSONString(eventModel);
-            this.jedisAdapter.lpush(KeysUtil.EVENTQUEUE, model);
+            this.jedisAdapter.lpush(KeysUtil.EVENT_QUEUE, model);
             return true;
         } catch (Exception e) {
             return false;

@@ -12,9 +12,10 @@ package top.aleaf.utils;
 
 /**
  * 〈〉
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 public class KeysUtil {
-    public static final String EVENTQUEUE="EVENT_QUEUE";
+    public static final String EVENT_QUEUE="EVENT_QUEUE";
 
 }

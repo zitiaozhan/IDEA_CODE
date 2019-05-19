@@ -23,12 +23,16 @@
         <div class=" text-center margin-small-top logo-color text-small">论文 | 专利 | 教材 | ... </div>
 
         <#if validateCode??>
-            <div class="text-big text-center" style="margin-top: 30px">注册信息已发送成功，请注意查收</div>
+            <div class="text-big text-center" style="margin-top: 30px">注册或找回密码信息已发送成功，请注意查收</div>
         <#else>
             <#if msg??>
                 <div class="text-big text-center" style="color: red;margin-top: 30px">${msg!"异常！"}</div>
             <#else>
+                <#if param1??>
                 <form class="register-form" name="register" action="/back/reg" method="post" autocomplete="off">
+                <#else>
+                <form class="register-form" name="register" action="/back/repassword" method="post" autocomplete="off">
+                </#if>
                     <div class="reg-wrap border" style="height: 42px">
                         <div class="reg-number border-bottom">
                             <input type="email" class="fl padding-big-left reg-phone"
@@ -37,7 +41,7 @@
                         </div>
                     </div>
                     <div class="margin-large-top padding-big-top">
-                        <input type="submit" class="btn text-big" value="发送注册信息">
+                        <input type="submit" class="btn text-big" value="发送验证信息">
                     </div>
                 </form>
             </#if>

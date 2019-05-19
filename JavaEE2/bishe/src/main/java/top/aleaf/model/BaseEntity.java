@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 /**
  * 基础信息
+ *
+ * @author 郭新晔
  */
 @Component
 public class BaseEntity {
@@ -19,6 +21,10 @@ public class BaseEntity {
 
     @Transient
     private Integer rows = 10;
+
+    //辅助查询
+    @Transient
+    private Boolean scoreNotNull = false;
 
     public Integer getId() {
         return id;
@@ -42,5 +48,13 @@ public class BaseEntity {
 
     public void setRows(Integer rows) {
         this.rows = rows;
+    }
+
+    public Boolean getScoreNotNull() {
+        return scoreNotNull;
+    }
+
+    public void setScoreNotNull(Boolean scoreNotNull) {
+        this.scoreNotNull = scoreNotNull;
     }
 }

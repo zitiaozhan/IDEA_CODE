@@ -19,14 +19,6 @@
     <#--页面内容-->
     <div class="view-product">
         <div class="authority">
-            <#--<div class="authority-head">
-                <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">消息列表
-                        <span class="fr text-small text-normal padding-top">更新时间：${nowDate?string('yyyy-MM-dd')}</span>
-                    </h6>
-                </div>
-            </div>-->
-
             <#--聊天对话-->
             <div class="conversationDetail" align="left">
                 <div class="chatTop">
@@ -36,7 +28,7 @@
                         </a>
                     </div>
                     <p class="chatTitle">
-                        与<strong class="name W_fb">${anotherUser.name!"未知错误"}</strong>对话中
+                        与<strong class="name W_fb">${anotherUser.name!" -- "}</strong>对话中
                     </p>
                 </div>
 
@@ -63,7 +55,7 @@
                                                 </div>
                                             </div>
                                             <div class="main_bottom bubble_l">
-                                            ${message.createdDate?string("yyyy年MM月dd日 HH:mm:ss")}
+                                            ${message.createdDate}
                                             </div>
                                         </div>
                                     </div>
@@ -88,7 +80,7 @@
                                                 </div>
                                             </div>
                                             <div class="main_bottom bubble_r">
-                                            ${message.createdDate?string("yyyy年MM月dd日 HH:mm:ss")}
+                                            ${message.createdDate}
                                             </div>
                                         </div>
                                     </div>

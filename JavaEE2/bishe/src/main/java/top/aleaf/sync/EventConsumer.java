@@ -15,13 +15,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 import top.aleaf.utils.JedisAdapter;
 import top.aleaf.utils.KeysUtil;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.Map;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/22 0022
  */
 @Service
@@ -38,21 +39,19 @@ public class EventConsumer implements InitializingBean, ApplicationContextAware 
 
     private ApplicationContext context;
     private Map<EventType, List<EventHandler>> eventTypeConfig = new HashMap<>();
-    @Autowired
+    @Resource
     private JedisAdapter jedisAdapter;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, EventHandler> allHandler = context.getBeansOfType(EventHandler.class);
-        if (allHandler != null) {
-            for (Map.Entry<String, EventHandler> item : allHandler.entrySet()) {
-                List<EventType> eventTypes = item.getValue().getSupportTypes();
-                for (EventType type : eventTypes) {
-                    if (!eventTypeConfig.containsKey(type)) {
-                        this.eventTypeConfig.put(type, new ArrayList<>());
-                    }
-                    this.eventTypeConfig.get(type).add(item.getValue());
+        for (Map.Entry<String, EventHandler> item : allHandler.entrySet()) {
+            List<EventType> eventTypes = item.getValue().getSupportTypes();
+            for (EventType type : eventTypes) {
+                if (!eventTypeConfig.containsKey(type)) {
+                    this.eventTypeConfig.put(type, new ArrayList<>());
                 }
+                this.eventTypeConfig.get(type).add(item.getValue());
             }
         }
 
@@ -60,9 +59,9 @@ public class EventConsumer implements InitializingBean, ApplicationContextAware 
             @Override
             public void run() {
                 while (true) {
-                    List<String> models = jedisAdapter.brpop(0, KeysUtil.EVENTQUEUE);
+                    List<String> models = jedisAdapter.brpop(0, KeysUtil.EVENT_QUEUE);
                     for (String item : models) {
-                        if (item.equals(KeysUtil.EVENTQUEUE)) {
+                        if (item.equals(KeysUtil.EVENT_QUEUE)) {
                             continue;
                         }
 

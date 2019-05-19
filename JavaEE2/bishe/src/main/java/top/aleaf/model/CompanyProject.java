@@ -18,19 +18,20 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
 public class CompanyProject extends BaseEntity {
     private String name;
     private String projectDate;
-    private Integer chargePerson;
+    private String chargePerson;
     private String chargeGroup;
     private String participant;
     private String projectSource;
     private String projectType;
-    private Float contractMoney;
-    private Float arrivalMoney;
+    private Integer contractMoney;
+    private Integer arrivalMoney;
     private String arrivalDate;
     private String completeDate;
     private String projectStatus;
@@ -63,11 +64,11 @@ public class CompanyProject extends BaseEntity {
         return this;
     }
 
-    public Integer getChargePerson() {
+    public String getChargePerson() {
         return chargePerson;
     }
 
-    public CompanyProject setChargePerson(Integer chargePerson) {
+    public CompanyProject setChargePerson(String chargePerson) {
         this.chargePerson = chargePerson;
         return this;
     }
@@ -108,20 +109,20 @@ public class CompanyProject extends BaseEntity {
         return this;
     }
 
-    public Float getContractMoney() {
+    public Integer getContractMoney() {
         return contractMoney;
     }
 
-    public CompanyProject setContractMoney(Float contractMoney) {
+    public CompanyProject setContractMoney(Integer contractMoney) {
         this.contractMoney = contractMoney;
         return this;
     }
 
-    public Float getArrivalMoney() {
+    public Integer getArrivalMoney() {
         return arrivalMoney;
     }
 
-    public CompanyProject setArrivalMoney(Float arrivalMoney) {
+    public CompanyProject setArrivalMoney(Integer arrivalMoney) {
         this.arrivalMoney = arrivalMoney;
         return this;
     }

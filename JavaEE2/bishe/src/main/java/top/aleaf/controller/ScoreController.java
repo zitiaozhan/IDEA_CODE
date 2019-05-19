@@ -3,7 +3,6 @@ package top.aleaf.controller;
 import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import top.aleaf.model.*;
+import top.aleaf.model.enumModel.UserRoleEnum;
 import top.aleaf.service.ScoreService;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -25,9 +25,9 @@ import java.util.List;
 @Controller
 public class ScoreController {
     public static final Logger LOGGER = LoggerFactory.getLogger(ScoreController.class);
-    @Autowired
+    @Resource
     private ScoreService scoreService;
-    @Autowired
+    @Resource
     private HostHolder hostHolder;
 
     @RequestMapping(path = {"/score"})
@@ -36,12 +36,12 @@ public class ScoreController {
         try {
             User localUser = hostHolder.getUser();
             Role localRole = hostHolder.getRole();
-            if (localRole == null || "manager".equals(localRole.getDetail())) {
+            if (localRole == null || UserRoleEnum.MANAGER.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
-            List<Score> scoreList = new ArrayList<>();
-            if ("teacher".equals(localRole.getDetail())) {
-                score.setUserId(localUser.getId());
+            List<Score> scoreList;
+            if (UserRoleEnum.TEACHER.getValue().equals(localRole.getDetail())) {
+                score.setUserNumber(localUser.getNumber());
             }
             scoreList = this.scoreService.getAll(score);
 
@@ -51,7 +51,7 @@ public class ScoreController {
             model.addAttribute("vo", vo);
 
             //分页实现
-            model.addAttribute("pageInfo", new PageInfo<Score>(scoreList));
+            model.addAttribute("pageInfo", new PageInfo<>(scoreList));
             model.addAttribute("score", score);
 
             if (msg != null) {
@@ -66,10 +66,10 @@ public class ScoreController {
 
     @RequestMapping(path = {"/score/edit"}, method = RequestMethod.POST)
     public String editScore(Score score, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
             boolean isSave = score.getId() == null;
@@ -90,7 +90,7 @@ public class ScoreController {
                             Model model) {
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
             if (scoreId != null) {
@@ -106,10 +106,10 @@ public class ScoreController {
 
     @RequestMapping(path = {"/score/delete/{scoreId}"})
     public String delete(@PathVariable("scoreId") int scoreId, Model model) {
-        String msg = null;
+        String msg;
         try {
             Role localRole = hostHolder.getRole();
-            if (localRole == null || !"smanager".equals(localRole.getDetail())) {
+            if (localRole == null || !UserRoleEnum.ADMIN.getValue().equals(localRole.getDetail())) {
                 return "redirect:/index";
             }
             msg = this.scoreService.delete(scoreId) ? "删除成功" : "删除失败";

@@ -10,9 +10,7 @@
  */
 package top.aleaf.interceptor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.common.base.Strings;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,6 +25,7 @@ import top.aleaf.service.MessageService;
 import top.aleaf.utils.ConstantUtil;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,22 +34,22 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/1/18 0018
  */
 @Component
 public class PassportInterceptor implements HandlerInterceptor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PassportInterceptor.class);
-    @Autowired
+    @Resource
     private LoginTicketMapper ticketMapper;
-    @Autowired
+    @Resource
     private UserMapper userMapper;
-    @Autowired
+    @Resource
     private MessageService messageService;
-    @Autowired
+    @Resource
     private HostHolder hostHolder;
-    @Autowired
+    @Resource
     private RoleMapper roleMapper;
-    @Autowired
+    @Resource
     private ConstantUtil constantUtil;
 
     @Override
@@ -60,13 +59,13 @@ public class PassportInterceptor implements HandlerInterceptor {
         String ticket = "";
         if (request.getCookies() != null) {
             for (Cookie item : request.getCookies()) {
-                if (item.getName().equals("ticket")) {
+                if (item.getName().equals(ConstantUtil.TOKEN)) {
                     ticket = item.getValue();
                     break;
                 }
             }
         }
-        if (ticket != null) {
+        if (!Strings.isNullOrEmpty(ticket)) {
             LoginTicket loginTicket = this.ticketMapper.selectOneByExample(
                     GeneralExample.getBaseAndConditionExample(
                             LoginTicket.class, " and ticket='" + ticket + "'", true));

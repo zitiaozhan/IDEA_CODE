@@ -25,9 +25,9 @@
 				<form class="register-form" name="register" action="/back/register" method="post" autocomplete="off">
 					<div class="reg-wrap border" style="height: 162px">
 						<div class="reg-number border-bottom">
-                            <input type="text" class="fl padding-big-left reg-phone" autofocus
-                                   name="name" placeholder="请输入姓名" minlength="2"
-								   nullmsg="popup('请填写姓名')" required="required"/>
+                            <input type="number" class="fl padding-big-left reg-phone" autofocus
+                                   name="number" placeholder="请输入编号" minlength="3" maxlength="15"
+								   nullmsg="popup('请填写编号')" required="required"/>
 						</div>
 						<div class="reg-number border-bottom">
                             <input type="password" class="fl padding-big-left reg-phone"
@@ -59,7 +59,7 @@
 					</div>
 				</form>
 				<div class="forget">
-					<a href="/toRepassword" class="forget-pwd text-small fl">忘记登录密码？</a>
+                    <a href="#" onclick="modify_site_tip('需要验证邮箱才能找回密码','/backJumpTo?path=mailInput&param1=repassword')" class="forget-pwd text-small fl">忘记登录密码？</a>
 					<a href="/toLogin" class="forget-new text-small fr" id="forger-login">已有账号，立即登录</a>
 				</div>
 			</div>

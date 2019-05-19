@@ -52,7 +52,7 @@
                         作者
                     </div>
                     <div class="th w10">
-                        教材总字数
+                        教材字数(万字)
                     </div>
                     <div class="th w10">
                         其他作者
@@ -115,24 +115,22 @@
                         ${vo['teachingMaterial'].publishDate?html}
                         </div>
                         <div class="td w10">
-                            <#if localRole.detail!='manager'&&teachingMaterial.status!=4>
+                            <#if teachingMaterial.status!=4&&((localRole.detail=='teacher'&&teachingMaterial.status==0)||(localRole.detail=='smanager'))>
                                 <a href="#" onclick="del_site('/teachingMaterial/delete/${vo['teachingMaterial'].id}')"
                                    class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
-                            <#if localRole.detail!='teacher'>
                             <a href="#" onclick="modify_site('/teachingMaterial/forEdit?teachingMaterialId=${vo['teachingMaterial'].id}')"
                                class="button-word2 btn_ajax_confirm">查看</a>
-                            </#if>
                             <#if teachingMaterial.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if teachingMaterial.status==4>
-                                <a href="#" onclick="modify_site('/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/teachingMaterial/approve/${vo['teachingMaterial'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -141,7 +139,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

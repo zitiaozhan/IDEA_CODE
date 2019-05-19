@@ -14,6 +14,7 @@ import tk.mybatis.mapper.entity.Example;
 
 /**
  * 〈〉
+ * @author 郭新晔
  */
 public class GeneralExample {
     /**
@@ -34,7 +35,7 @@ public class GeneralExample {
      *
      * @param clazz        类型
      * @param conditionStr 指定条件
-     * @param flag         是否带有status!=1
+     * @param flag         是否带有status=0
      * @return
      */
     public static Example getBaseAndConditionExample(Class clazz, String conditionStr, boolean flag) {

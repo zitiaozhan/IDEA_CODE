@@ -78,7 +78,7 @@
                             </#if>
                         </div>
                         <div class="td w15">
-                        ${vo['firstAuthor']?html}
+                        ${vo['firstAuthor'].name?html}
                         </div>
                         <div class="td w15">
                             <#if vo['paper'].moreAuthor?length gt 16>
@@ -96,8 +96,8 @@
                         <div class="td w15">
                         ${vo['paper'].publishDate?html}
                         </div>
-                        <div class="td w5">
-                            <#if localRole.detail!='manager'&&paper.status!=4>
+                        <div class="td w15">
+                            <#if paper.status!=4&&((localRole.detail=='teacher'&&paper.status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/paper/delete/${vo['paper'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
@@ -105,14 +105,14 @@
                                class="button-word2 btn_ajax_confirm">查看</a>
                             <#if paper.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/paper/approve/${vo['paper'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/paper/approve/${vo['paper'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/paper/approve/${vo['paper'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/paper/approve/${vo['paper'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if paper.status==4>
-                                <a href="#" onclick="modify_site('/paper/approve/${vo['paper'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/paper/approve/${vo['paper'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -121,7 +121,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

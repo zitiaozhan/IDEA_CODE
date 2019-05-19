@@ -18,6 +18,7 @@ import java.util.Date;
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Component
@@ -26,15 +27,15 @@ public class GovernmentProject extends BaseEntity {
     private String projectId;
     private String techCode;
     private String finaCode;
-    private Integer chargePerson;
+    private String chargePerson;
     private String chargeGroup;
     private String participant;
     private String projectDate;
     private String projectSource;
     private String projectType;
     private String arrivalDate;
-    private Float contractMoney;
-    private Float arrivalMoney;
+    private Integer contractMoney;
+    private Integer arrivalMoney;
     private String moneySource;
     private String projectStatus;
     private String completeDate;
@@ -84,11 +85,11 @@ public class GovernmentProject extends BaseEntity {
         return this;
     }
 
-    public Integer getChargePerson() {
+    public String getChargePerson() {
         return chargePerson;
     }
 
-    public GovernmentProject setChargePerson(Integer chargePerson) {
+    public GovernmentProject setChargePerson(String chargePerson) {
         this.chargePerson = chargePerson;
         return this;
     }
@@ -147,20 +148,20 @@ public class GovernmentProject extends BaseEntity {
         return this;
     }
 
-    public Float getContractMoney() {
+    public Integer getContractMoney() {
         return contractMoney;
     }
 
-    public GovernmentProject setContractMoney(Float contractMoney) {
+    public GovernmentProject setContractMoney(Integer contractMoney) {
         this.contractMoney = contractMoney;
         return this;
     }
 
-    public Float getArrivalMoney() {
+    public Integer getArrivalMoney() {
         return arrivalMoney;
     }
 
-    public GovernmentProject setArrivalMoney(Float arrivalMoney) {
+    public GovernmentProject setArrivalMoney(Integer arrivalMoney) {
         this.arrivalMoney = arrivalMoney;
         return this;
     }

@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">论文管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/paper')">
+                        论文管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/paper/edit" method="post">
                             <#if paper??>
                                 <input type="hidden" name="id" value="${paper.id}"/>
+                                <input type="hidden" name="status" value="${paper.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">论文名称</label>
@@ -50,16 +53,28 @@
                                 <label class="">第一作者</label>
                                 <div class="col-sm-3">
                                     <#if paper??>
-                                        <input type="hidden" name="firstAuthor" value="${paper.firstAuthor}">
-                                        <input type="text" class="form-control redisabled"
-                                               placeholder="第一作者"
-                                               value="${firstAuthorName}"
-                                               disabled="disabled" required="required">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="第一作者编号" name="firstAuthor"
+                                                   required="required" value="${paper.firstAuthor}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="firstAuthor" value="${paper.firstAuthor}">
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="第一作者"
+                                                   value="${firstAuthorName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="firstAuthor" value="${localUser.id}">
-                                        <input type="text" class="form-control"
-                                               value="${localUser.name}" placeholder="第一作者"
-                                               required="required" disabled>
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="firstAuthor" placeholder="第一作者编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="firstAuthor" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="第一作者"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                             </div>
@@ -126,13 +141,16 @@
                                 <label class="">其他作者</label>
                                 <div class="col-sm-11">
                                     <#if paper??>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7"
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  cols="70" rows="7" placeholder="其他作者"
+                                                  onmouseout="validateMoreAuthor('其他作者')"
                                                   disabled="disabled">${paper.moreAuthor}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="moreAuthor"
-                                                  cols="70" rows="7">其他作者</textarea>
-                                    </#if>
+                                        <textarea class="form-textarea more-author" name="moreAuthor"
+                                                  onmouseout="validateMoreAuthor('其他作者')"
+                                                  cols="70" rows="7" placeholder="其他作者"></textarea>
+                                    </#if>（填入作者编号，使用英文逗号隔开）
+                                    <p class="warn_div" style="color: red;"></p>
                                 </div>
                             </div>
 
@@ -191,18 +209,18 @@
                                 <div class="col-sm-11">
                                     <#if paper??>
                                         <textarea class="form-textarea" name="remark"
-                                                  cols="70" rows="7"
+                                                  cols="70" rows="7" placeholder="备注信息"
                                                   disabled="disabled">${paper.remark}</textarea>
                                     <#else>
                                         <textarea class="form-textarea" name="remark"
-                                                  cols="70" rows="7">备注信息</textarea>
+                                                  cols="70" rows="7" placeholder="备注信息"></textarea>
                                     </#if>
                                 </div>
                             </div>
 
                             <div class="content-form-submit" align="center">
                             <#if paper??>
-                                <#if localRole.detail!='teacher'>
+                                <#if (paper.status==0&&localRole.detail=='teacher')||(localRole.detail=='smanager')>
                                 <input class="content-submit" id="edit_btn" type="button"
                                        value="编辑">
                                 </#if>

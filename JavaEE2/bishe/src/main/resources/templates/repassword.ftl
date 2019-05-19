@@ -29,17 +29,29 @@
 				<p class=" text-center margin-small-top logo-color text-small">
                     论文 | 专利 | 教材 | ...
 				</p>
-				<form class="register-form" action="index.html" method="post" autocomplete="off">
+                <#if msg??>
+                    <div class="text-big text-center" style="color: red;margin-top: 30px">
+                    ${msg!"修改密码出错"}
+                    </div>
+                </#if>
+				<form class="register-form" action="/repassword" method="post" autocomplete="off">
 					<div class="num-box ">
 						<input type="text" placeholder="请输入邮箱" autofocus="true"
-                               id="num-name" name="mail" datatype="m"
-                               nullmsg="请填写正确的邮箱" required="required">
+                               id="num-name" name="mail" datatype="m" readonly="readonly"
+                               nullmsg="请填写正确的邮箱" required="required" value="${mail!""}">
 					</div>
-					<div class="slider-box">
-						<div id="captcha" style="margin-left: 12px;">
-						</div>
-					</div>
-					<input type="submit" class="btn text-center login-btn" value="发送验证码">
+                    <div class="reg-number border-bottom">
+                        <input type="password" class="fl padding-big-left reg-phone"
+                               id="pwd" name="password" placeholder="请输入新密码" minlength="6"
+                               nullmsg="popup('请填写密码')" required="required"/>
+                    </div>
+                    <div class="reg-number border-bottom">
+                        <input type="password" class="fl padding-big-left reg-phone"
+                               id="repwd" placeholder="重复输入密码" minlength="6"
+                               nullmsg="popup('请重复填写密码')" required="required"
+                               onmouseover="validate()"/>
+                    </div>
+					<input type="submit" id="register-submit" class="btn text-center login-btn" value="更改密码">
 					<div class="forget">
 						<a href="/toRegister" class="forget-pwd text-small fl">创建一个新账号</a>
 						<a href="/toLogin" class="forget-new text-small fr" id="forger-login">已有账号，立即登录</a>

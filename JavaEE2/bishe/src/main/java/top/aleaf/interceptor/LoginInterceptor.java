@@ -10,29 +10,29 @@
  */
 package top.aleaf.interceptor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import top.aleaf.model.HostHolder;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2018/12/3 0003
  */
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
-    @Autowired
+    @Resource
     private HostHolder hostHolder;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         if (hostHolder.getUser() == null) {
-            //String next = httpServletRequest.getRequestURI().toString();
             httpServletResponse.sendRedirect("/toLogin");
             return false;
         }

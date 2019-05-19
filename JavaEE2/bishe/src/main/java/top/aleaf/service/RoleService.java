@@ -1,24 +1,25 @@
 package top.aleaf.service;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.aleaf.mapper.RoleMapper;
 import top.aleaf.model.Role;
 import top.aleaf.utils.GeneralExample;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * 〈〉
  *
+ * @author 郭新晔
  * @create 2019/2/11 0011
  */
 @Service
 public class RoleService {
-    @Autowired
+    @Resource
     private RoleMapper roleMapper;
-    @Autowired
+    @Resource
     private SensitiveFilterService filterService;
 
     public boolean save(Role role) {

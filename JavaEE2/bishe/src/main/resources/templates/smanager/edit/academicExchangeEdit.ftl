@@ -18,7 +18,8 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">学术交流活动管理
+                    <h6 class="layout padding-left manage-head-con" onclick="modify_site('/academicExchange')">
+                        学术交流活动管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +33,7 @@
                         <form class="data_form" action="/academicExchange/edit" method="post">
                             <#if academicExchange??>
                                 <input type="hidden" name="id" value="${academicExchange.id}"/>
+                                <input type="hidden" name="status" value="${academicExchange.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">活动名称</label>
@@ -94,13 +96,17 @@
                                 <label class="">参加人员</label>
                                 <div class="col-sm-11">
                                     <#if academicExchange??>
-                                        <textarea class="form-textarea" name="mainParticipant"
+                                        <textarea class="form-textarea more-author" name="mainParticipant"
+                                                  placeholder="参加人员"
+                                                  onmouseout="validateMoreAuthor('参加人员')"
                                                   cols="70" rows="7">${academicExchange.mainParticipant}</textarea>
                                     <#else>
-                                        <textarea class="form-textarea" name="mainParticipant"
-                                                  cols="70" rows="7">参加人员</textarea>
+                                        <textarea class="form-textarea more-author" name="mainParticipant"
+                                                  onmouseout="validateMoreAuthor('参加人员')"
+                                                  cols="70" rows="7" placeholder="参加人员">${localUser.number}</textarea>
                                     </#if>
-                                </div>(须含自己)
+                                </div>（填入作者编号，使用英文逗号隔开）
+                                <p class="warn_div" style="color: red;"></p>
                             </div>
 
                             <div class="form-group">
@@ -108,10 +114,11 @@
                                 <div class="col-sm-11">
                                     <#if academicExchange??>
                                         <textarea class="form-textarea" name="remark"
+                                                  placeholder="备注信息"
                                                   cols="70" rows="7">${academicExchange.remark}</textarea>
                                     <#else>
                                         <textarea class="form-textarea" name="remark"
-                                                  cols="70" rows="7">备注信息</textarea>
+                                                  cols="70" rows="7" placeholder="备注信息"></textarea>
                                     </#if>
                                 </div>
                             </div>

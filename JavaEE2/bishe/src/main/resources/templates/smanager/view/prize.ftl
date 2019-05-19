@@ -103,24 +103,22 @@
                         ${vo['prize'].prizeDate?html}
                         </div>
                         <div class="td w10">
-                            <#if localRole.detail!='manager'&&prize.status!=4>
+                            <#if prize.status!=4&&((localRole.detail=='teacher'&&prize.status==0)||(localRole.detail=='smanager'))>
                             <a href="#" onclick="del_site('/prize/delete/${vo['prize'].id}')"
                                class="button-word2 btn_ajax_confirm">删除</a>
                             </#if>
-                            <#if localRole.detail!='teacher'>
                             <a href="#" onclick="modify_site('/prize/forEdit?prizeId=${vo['prize'].id}')"
                                class="button-word2 btn_ajax_confirm">查看</a>
-                            </#if>
                             <#if prize.status==0>
                                 <#if localRole.detail=='manager'||localRole.detail=='smanager'>
-                                <a href="#" onclick="modify_site('/prize/approve/${vo['prize'].id}?status=1')"
+                                <a href="#" onclick="confirm_redirect('通过','/prize/approve/${vo['prize'].id}?status=1')"
                                    class="button-word2 btn_ajax_confirm">通过</a>
-                                <a href="#" onclick="modify_site('/prize/approve/${vo['prize'].id}?status=2')"
+                                <a href="#" onclick="confuse_option('/prize/approve/${vo['prize'].id}?status=2')"
                                    class="button-word2 btn_ajax_confirm">驳回</a>
                                 </#if>
                             </#if>
                             <#if prize.status==4>
-                                <a href="#" onclick="modify_site('/prize/approve/${vo['prize'].id}?status=0')"
+                                <a href="#" onclick="confirm_redirect('恢复','/prize/approve/${vo['prize'].id}?status=0')"
                                    class="button-word2 btn_ajax_confirm">恢复</a>
                             </#if>
                         </div>
@@ -129,7 +127,7 @@
             <#else>
             </div>
                 <div class="tr non-info show border-bottom-none">
-                    <span>没查询到符合条件的记录</span>
+                    <span>未查询到符合条件的记录</span>
                 </div>
             </div>
             </#if>

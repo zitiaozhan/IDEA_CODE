@@ -18,7 +18,9 @@
         <div class="authority">
             <div class="authority-head">
                 <div class="manage-head">
-                    <h6 class="layout padding-left manage-head-con">学术讲座管理
+                    <h6 class="layout padding-left manage-head-con"
+                        onclick="modify_site('/lecture')">
+                        学术讲座管理
                     </h6>
                 </div>
             </div>
@@ -32,6 +34,7 @@
                         <form class="data_form" action="/lecture/edit" method="post">
                             <#if lecture??>
                                 <input type="hidden" name="id" value="${lecture.id}"/>
+                                <input type="hidden" name="status" value="${lecture.status}"/>
                             </#if>
                             <div class="form-group">
                                 <label class="">报告名称</label>
@@ -49,16 +52,28 @@
                                 <label class="">报告人员</label>
                                 <div class="col-sm-3">
                                     <#if lecture??>
-                                        <input type="hidden" name="rapporteur" value="${lecture.rapporteur}">
-                                        <input type="text" class="form-control"
-                                               placeholder="报告人员"
-                                               disabled="disabled" required="required"
-                                               value="${rapporteurName}">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   placeholder="报告人员编号" name="rapporteur"
+                                                   required="required" value="${lecture.chargePerson}"
+                                                   disabled="disabled">
+                                        <#else>
+                                            <input type="hidden" name="rapporteur" value="${lecture.rapporteur}">
+                                            <input type="text" class="form-control redisabled"
+                                                   disabled="disabled" placeholder="报告人员"
+                                                   value="${rapporteurName}">
+                                        </#if>
                                     <#else>
-                                        <input type="hidden" name="rapporteur" value="${localUser.id}">
-                                        <input type="text" class="form-control"
-                                               value="${localUser.name}" placeholder="报告人员"
-                                               disabled="disabled" required="required">
+                                        <#if localRole.detail=='smanager'>
+                                            <input type="text" class="form-control"
+                                                   name="rapporteur" placeholder="报告人员编号"
+                                                   value="${localUser.number}">
+                                        <#else>
+                                            <input type="hidden" name="rapporteur" value="${localUser.number}"/>
+                                            <input type="text" class="form-control"
+                                                   disabled="disabled" placeholder="报告人员"
+                                                   value="${localUser.name}">
+                                        </#if>
                                     </#if>
                                 </div>
                             </div>

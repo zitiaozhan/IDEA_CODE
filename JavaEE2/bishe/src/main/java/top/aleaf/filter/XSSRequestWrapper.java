@@ -6,11 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
+ * @author 郭新晔
  * @Description: request的包装类
  */
 public class XSSRequestWrapper extends HttpServletRequestWrapper {
 
-    public XSSRequestWrapper(HttpServletRequest request) {
+    XSSRequestWrapper(HttpServletRequest request) {
         super(request);
     }
  

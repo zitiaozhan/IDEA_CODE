@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	
+	"
+	default-autowire="byName"
+	>
+	
+	<!-- 添加注解支持 -->
+	<context:annotation-config></context:annotation-config>
+	<!-- 表示使用AspectJ的支持 -->
+	<aop:aspectj-autoproxy  proxy-target-class="true"/>
+	<!-- 扫描组件包 -->
+	<context:component-scan base-package="com.xsyu.mapper"></context:component-scan>
+	<context:component-scan base-package="com.xsyu.service"></context:component-scan>
+	<context:component-scan base-package="com.xsyu.biz"></context:component-scan>
+	<context:component-scan base-package="com.xsyu.action"></context:component-scan>
+
+	<!-- 加载数据库配置文件 -->
+	<context:property-placeholder location="classpath:config/db.properties"/>
+	<!-- 注入数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<!--<property name="driverClassName" value="${jdbc.driver}"/>-->
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<!--<property name="url" value="${jdbc.url}"/>-->
+		<property name="url" value="jdbc:mysql://localhost:3306/studb"/>
+		<!--<property name="username" value="${jdbc.username}"/>-->
+		<property name="username" value="root"/>
+		<!--<property name="password" value="${jdbc.password}"/>-->
+		<property name="password" value="root"/>
+		<property name="maxActive" value="10"/>
+		<property name="maxIdle" value="5"/>
+	</bean>
+	
+	<!-- 加载mybatis会话工厂SqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 加载mybatis的配置文件 -->
+		<property name="configLocation" value="classpath:/config/SqlMapConfig.xml"/>
+		<!-- 配置数据源 -->
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:/config/ClazzMapper.xml</value>
+				<value>classpath:/config/StudentMapper.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- mapper批量扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.xsyu.mapper"/>
+	</bean>
+	
+	<!-- 注入事务管理器 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 注入注解的事务通知 -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+
+</beans>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理</title>
+    <link rel="stylesheet" href="easyUI/themes/default/easyui.css">
+    <link rel="stylesheet" href="easyUI/themes/icon.css">
+    <script src="easyUI/jquery-2.1.1.min.js"></script>
+    <script src="easyUI/jquery.easyui.min.js"></script>
+    <script src="easyUI/locale/easyui-lang-zh_CN.js"></script>
+
+    <script src="js/studentadd.js"></script>
+</head>
+<body>
+<div align="center">
+<form id="add_stu" name="add_stu" method="post" action="save_Student.action">
+    <table>
+        <tr><td colspan="2">
+            <h3>学生信息</h3>
+        </td></tr>
+        <tr>
+            <td>学生姓名</td>
+            <td>
+                <input type="text" id="sname" name="sname" class="easyui-validatebox" data-options="required:true,missingMessage:'请输入姓名'">
+            </td>
+        </tr>
+        <tr>
+            <td>学生性别</td>
+            <td>
+                <select id="sex" name="sex" required>
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>学生地址</td>
+            <td>
+                <input type="text" id="address" name="address" class="easyui-validatebox" data-options="required:true,missingMessage:'请输入地址'">
+            </td>
+        </tr>
+        <tr>
+            <td>学生学历</td>
+            <td>
+                <input id="edu" class="easyui-combobox" name="edu"
+                       data-options="valueField:'edu',textField:'edu',url:'initEdu_Student.action',panelHeight:'80px'" value="本科"/>
+            </td>
+        </tr>
+        <tr>
+            <td>学生生日</td>
+            <td>
+                <input type="text" id="birthdayStr" name="birthdayStr" value="1995-05-02" class= "easyui-datebox" required ="required,missingMessage:'请输入生日'">
+            </td>
+        </tr>
+        <tr>
+            <td>学生班级</td>
+            <td>
+                <input id="cid" class="easyui-combobox" name="cid"
+                       data-options="valueField:'cid',textField:'cname',url:'doInit_Student.action',panelHeight:'80px'" value="1"/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button id="update_Btn" class="button expand">新增</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</div>
+</body>
+</html>

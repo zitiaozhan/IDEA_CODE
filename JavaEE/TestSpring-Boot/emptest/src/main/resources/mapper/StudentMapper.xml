@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xsyu.mapper.StudentMapper" >
+	
+	<resultMap type="Student" id="studentMap">
+		<id column="sid" property="sid"/>
+		<result column="sname" property="sname"/>
+		<result column="sex" property="sex"/>
+		<result column="address" property="address"/>
+		<result column="edu" property="edu"/>
+		<result column="birthday" property="birthday"/>
+		<result column="cid" property="cid"/>
+		<association property="clazz" javaType="Clazz" column="cid" select="findClazzByCid"/>
+	</resultMap>
+
+	
+	<resultMap type="Clazz" id="clazzMap">
+		<id property="cid" column="cid"/>
+		<result property="cname" column="cname"/>
+	</resultMap>
+	
+	<insert id="save" parameterType="Student">
+		insert into student(sname,sex,address,edu,birthday,cid) 
+		values(#{sname},#{sex},#{address},#{edu},#{birthday},#{cid})
+	</insert>
+	<delete id="remove" parameterType="int">
+		delete from student where sid=#{sid}
+	</delete>
+	<update id="update" parameterType="Student">
+		update student set 
+		sname=#{sname},sex=#{sex},address=#{address},edu=#{edu},birthday=#{birthday},cid=#{cid} 
+		where sid=#{sid}
+	</update>
+	<select id="findById" parameterType="int" resultMap="studentMap">
+		select * from student where sid=#{sid} 
+	</select>
+	<select id="findAll" resultMap="studentMap">
+		select * from student
+	</select>
+	<select id="getRows" resultType="long">
+		select count(*) from student where 1=1
+	</select>
+	<select id="getPageData" parameterType="com.xsyu.bean.PageBean" resultMap="studentMap">
+		select * from student limit ${(nowPage-1)*pageSize},${pageSize}
+	</select>
+	<select id="findClazzByCid" parameterType="int" resultMap="clazzMap">
+		select * from clazz where 1=1 and cid=#{cid}
+	</select>
+</mapper>

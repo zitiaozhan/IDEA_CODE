@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页面</title>
+    <link rel="stylesheet" href="easyUI/themes/default/easyui.css">
+    <link rel="stylesheet" href="easyUI/themes/icon.css">
+    <script src="easyUI/jquery-2.1.1.min.js"></script>
+    <script src="easyUI/jquery.easyui.min.js"></script>
+    <script src="easyUI/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/main.js"></script>
+</head>
+<body class="easyui-layout" id="mylayout">
+    <div data-options="region:'north',border:false," style="height:170px;overflow: hidden">
+        <img src="imgs/2.jpg" height="100%" width="100%"/>
+    </div>
+    <div data-options="region:'south',border:false" style="height:40px;">
+        <p class="root-info">Copyright©2018 All Rights Reserved</p>
+    </div>
+    <div data-options="region:'east',iconCls:'icon-reload',title:'East',split:true" style="width:100px;">
+
+    </div>
+    <div data-options="region:'west'" style="width:150px;">
+        <ul id="tt" class="easyui-tree">
+        </ul>
+    </div>
+    <div data-options="region:'center'" style="padding:5px;background:#eee;">
+        <div id="tabs" class="easyui-tabs" data-options="fit:true" style="width:500px;height:250px;">
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <constant name="struts.enable.DynamicMethodInvocation" value="true"/>
+    <package name="shopCar" namespace="/" extends="struts-default">
+        <action name="*_*" class="com.action.{2}Action" method="{1}">
+            <result name="ok" type="redirect">${path}</result>
+            <result name="fail" type="redirect">fail.jsp</result>
+        </action>
+    </package>
+</struts>

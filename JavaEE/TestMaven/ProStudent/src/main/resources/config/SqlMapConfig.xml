@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 批量定义持久化类的别名 -->
+	<typeAliases>
+		<!-- <package name="com.po"/> -->
+		<typeAlias type="com.xsyu.po.Student" alias="Student"/>
+		<typeAlias type="com.xsyu.po.Clazz" alias="Clazz"/>
+	</typeAliases>
+	<!--加载映射文件-->
+	<!--<mappers>
+		<mapper resource="classpath:/config/StudentMapper.xml"/>
+		<mapper resource="classpath:/config/ClazzMapper.xml"/>
+	</mappers>-->
+</configuration>

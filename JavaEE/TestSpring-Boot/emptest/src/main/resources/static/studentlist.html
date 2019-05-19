@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生列表</title>
+    <link rel="stylesheet" href="easyUI/themes/default/easyui.css">
+    <link rel="stylesheet" href="easyUI/themes/icon.css">
+    <script src="easyUI/jquery-2.1.1.min.js"></script>
+    <script src="easyUI/jquery.easyui.min.js"></script>
+    <script src="easyUI/locale/easyui-lang-zh_CN.js"></script>
+
+    <script src="js/studentlist.js"></script>
+</head>
+<body>
+<div id="aa" class="easyui-accordion" data-options="fit:true" style="width:300px;height:200px;">
+    <div title="列表" id="student_list" data-options="iconCls:'icon-save',selected:true" style="overflow:auto;padding:10px;">
+        <table id="list_tab">
+        </table>
+    </div>
+    <div title="修改" id="tab2" data-options="iconCls:'icon-reload',selected:false" style="padding:10px;">
+        content2
+    </div>
+    <div title="Title3">
+        content3
+    </div>
+</div>
+</body>
+</html>

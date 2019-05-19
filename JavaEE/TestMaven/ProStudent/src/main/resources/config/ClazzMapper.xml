@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xsyu.mapper.ClazzMapper" >
+
+	<resultMap type="Clazz" id="clazzMap">
+		<id property="cid" column="cid"/>
+		<result property="cname" column="cname"/>
+	</resultMap>
+	
+	<resultMap type="Student" id="studentMap">
+		<id column="sid" property="sid"/>
+		<result column="sname" property="sname"/>
+		<result column="sex" property="sex"/>
+		<result column="address" property="address"/>
+		<result column="edu" property="edu"/>
+		<result column="birthday" property="birthday"/>
+		<result column="cid" property="cid"/>
+	</resultMap>
+
+
+	<insert id="save" parameterType="Clazz">
+		insert into clazz(cname) values(#{cname})
+	</insert>
+	<delete id="remove" parameterType="int">
+		delete from clazz where cid=#{cid}
+	</delete>
+	<update id="update" parameterType="Clazz">
+		update clazz set cname=#{cname} where cid=#{cid}
+	</update>
+	<select id="findById" parameterType="int" resultMap="clazzMap">
+		select * from clazz where cid=#{cid}
+	</select>
+	<select id="findAll" resultMap="clazzMap">
+		select * from clazz
+	</select>
+	<select id="findStudentByCid" parameterType="int" resultMap="studentMap">
+		select * from student where cid=#{cid}
+	</select>
+</mapper>

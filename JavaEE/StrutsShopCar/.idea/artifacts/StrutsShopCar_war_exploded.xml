@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="StrutsShopCar:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/StrutsShopCar_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="StrutsShopCar/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="StrutsShopCar" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Struts 2-2.5.14.1" />
+          <element id="library" level="project" name="javassist-3.20.0-GA" />
+          <element id="library" level="project" name="standard" />
+          <element id="library" level="project" name="jstl" />
+          <element id="library" level="project" name="log4j-api-2.10.0" />
+          <element id="library" level="project" name="log4j-core-2.7" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
